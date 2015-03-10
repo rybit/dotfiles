@@ -111,6 +111,7 @@ alias edit_profile='edit_and_source ~/.profile'
 alias disable_searchlight='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist'
 alias enable_searchlight='sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist'
 alias sublime='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
+alias ls='ls -G'
 
 ###############################################################################
 # PATH
