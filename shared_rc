@@ -1,0 +1,168 @@
+###############################################################################
+# SYSTEM
+###############################################################################
+alias ls='ls -G'
+alias sl='ls'
+alias s='ls'
+alias ll='ls -alrh'
+alias grep='grep --color=auto'
+alias vim='vim -p'
+alias watch='watch -d -n 1'
+alias ssh='ssh -A'
+
+alias path='echo $PATH | tr ":" "\n"'
+alias stamp='date +%y%m%d_%H%M'
+
+alias source_profile='source ~/.profile'
+
+alias ping8s='ping 8.8.8.8'
+
+function f(){
+  find . -name "$@"
+}
+
+function unstash() { 
+  [ -e 'stash' ] || { echo "no stash"; return 1; }
+  mv -v stash/* .
+  rmdir stash
+}
+
+function stash() { 
+  [ ! -e 'stash' ] || { echo "already have a stash! can't do it"; return 1; }
+  mkdir stash/
+  mv -v "$@" stash/
+}
+
+function edit_and_source() { 
+  [ $# -eq 1 ] || { echo "must provide a file to use"; exit 1; }
+  [ -e "$1" ] || { echo "'$1' doesn't exist"; exit 2; }
+  vim "$1"
+  var ret = $?
+  if [ $? -eq 0 ]; then
+    source "$1"
+  else
+    echo "Editing '$1' didn't have a clean exit - not sourcing"
+    exit $ret
+  fi
+}
+
+function mkmv() {
+  [ $# -eq 1 ] || { echo "provide a dirname (only one)"; return; }
+  mkdir -p "$1"
+  cd "$1"
+}
+
+function mark() { 
+  for i in `seq 5`; do
+    printf "\e[1;104m%-`tput cols`s\e[m"
+  done
+}
+
+function trim() { 
+  echo "$@ "| sed 's/^[ \t\n]*//' | sed 's/[ \t\n]*$//'
+}
+
+function abs() { 
+  for f in $@; do
+    (cd `dirname $f`; echo `pwd`/`basename $f`)
+  done
+}
+
+function go() {
+  if [ $# -eq 0 ]; then
+    echo "usage: go <bookmark name>"
+    echo "special names are:"
+    echo -e "\tmark <name> - store the pwd under name"
+    echo -e "\tlist - list the stored names"
+  elif [ "$1" == "mark" ]; then
+    [ $# -eq 2 ] || { echo "must provide a name to mark"; return 1; }
+    echo $2,`pwd` >> ~/.go
+    echo "marked '`pwd`' as '$2'"
+  elif [ "$1" == "list" ]; then
+    cat ~/.go
+  else
+    SAVED_IFS=$IFS
+    IFS=$(echo -en "\n\b")
+    for line in `cat ~/.go`; do
+      tag=`echo $line | cut -d ',' -f 1`
+      dest="`echo $line | cut -d ',' -f 2-`"
+      if [ "$1" == "$tag" ]; then
+        cd "$dest"
+        IFS=$SAVED_IFS
+        return 0;
+      fi
+    done
+    [ "" == "$togo" ] && { echo "Can't find bookmark for '$1'"; return 1; }
+    [ -e "$togo" ] || { echo "Can't go to '$togo' because it doesn't exist"; return 1; }
+  fi
+}
+
+_go_complete() {
+  cur=${COMP_WORDS[COMP_CWORD]}
+  if [ "$cur" == "" ]; then
+    COMPREPLY=(`cat ~/.go | cut -d ',' -f 1`)
+  else
+    for opt in `cat ~/.go | cut -d ',' -f 1`; do
+      if [[ $opt =~ $cur ]]; then
+        COMPREPLY="$COMPREPLY $opt"
+      fi
+    done
+    COMPREPLY=($COMPREPLY)
+  fi
+}
+complete -o default -o nospace -F _go_complete go
+
+###############################################################################
+# VIM 
+###############################################################################
+function vimrc() {
+  vim ~/.vimrc
+}
+
+function vim_script(){ 
+  [ $# -eq 1 ] || { echo "Provide the name of the script to start"; return 1; }
+  [ ! -e "$1" ] || { echo "can't start a script that exists already"; return 1; }
+  
+  echo "#!/bin/bash" > "$1"
+  chmod +x "$1"
+  vim "$1"
+}
+
+###############################################################################
+# PYTHON
+###############################################################################
+function activate() { 
+  activate_script=`find . -name "activate"`
+  [ -e "$activate_script" ] || { echo "Failed to find a virtual env"; return 1; }
+  source "$activate_script"
+}
+
+###############################################################################
+# GIT 
+###############################################################################
+alias gitamend='git commit --amend'
+alias gst='git status'
+alias gitignore='vim .gitignore'
+alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
+
+function git-init-ignore(){ 
+  echo ".DS_Store" >> .gitignore
+  echo "*.bk" >> .gitignore
+  echo "*.pyc" >> .gitignore
+  echo "*.swp" >> .gitignore
+  echo "db/*" >> .gitignore
+}
+
+###############################################################################
+# HISTORY
+###############################################################################
+shopt -s cmdhist
+HISTCONTROL=ignoreboth
+HISTSIZE=10000
+HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:mount:umount:[ \t]*"
+
+###############################################################################
+# PATH
+###############################################################################
+PATH="~/local/bin:$PATH"
+
