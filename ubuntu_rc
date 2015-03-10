@@ -1,0 +1,8 @@
+[ -e ~/.yelp_rc ] && { source ~/.yelp_rc; }
+[ -e ~/.shared_rc ] && { source ~/.shared_rc; }
+
+function names_only() { 
+  sed 's/^[ \t]*//' | cut -f 1 -d ' ' | sed 's/.*//'
+}
+
+alias edit_bash_rc='edit_and_source ~/.bashrc'
