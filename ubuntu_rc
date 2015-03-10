@@ -5,4 +5,5 @@ function names_only() {
   sed 's/^[ \t]*//' | cut -f 1 -d ' ' | sed 's/.*//'
 }
 
+alias ls='ls --color=auto'
 alias edit_bash_rc='edit_and_source ~/.bashrc'
