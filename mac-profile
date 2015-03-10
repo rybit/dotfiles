@@ -1,0 +1,271 @@
+source ~/.yelp_rc
+#source ~/.git-completion.bash 
+#source ~/.git-prompt.sh
+
+function f(){
+  find . -name "$@"
+}
+
+function unstash() { 
+  [ -e 'stash' ] || { echo "no stash"; return 1; }
+  mv -v stash/* .
+  rmdir stash
+}
+
+function stash() { 
+  [ ! -e 'stash' ] || { echo "already have a stash! can't do it"; return 1; }
+  mkdir stash/
+  mv -v "$@" stash/
+}
+
+function size_dirs() { 
+  if [ $# -eq 0 ]; then 
+    dir='.'
+  else
+    dir="$@"
+  fi 
+  set SAVED_IFS=$IFS
+  IFS=$(echo -en "\n\b")
+  for f in `find "$dir" -depth 1 -type 'd' | sort`; do 
+    s=`ls -1 "$f" | wc -l`
+    echo "$s $f"
+  done
+  IFS=$SAVED_IFS
+  unset $SAVED_IFS
+}
+
+function edit_profile() { 
+  vim ~/.profile
+  echo "sourceing ~/.profile"
+  source ~/.profile
+}
+
+function vimrc() {
+  vim ~/.vimrc
+}
+
+function vim_script(){ 
+  [ $# -eq 1 ] || { echo "Provide the name of the script to start"; return 1; }
+  [ ! -e "$1" ] || { echo "can't start a script that exists already"; return 1; }
+  
+  echo "#!/bin/bash" > "$1"
+  chmod +x "$1"
+  vim "$1"
+}
+
+function save_ifs(){
+  set SAVED_IFS=$IFS
+  IFS=$(echo -en "\n\b")
+}
+
+function restore_ifs(){
+  IFS=$SAVED_IFS
+  unset $SAVED_IFS
+}
+
+function activate() { 
+  activate_script=`find . -name "activate"`
+  [ -e "$activate_script" ] || { echo "Failed to find a virtual env"; return 1; }
+  source "$activate_script"
+}
+
+function rename_no_spaces() {
+  for f in  *; do
+    new_name=`echo $f | sed 's/ /_/g'`
+    if [[ ! $new_name = "$f" ]]; then
+      mv -v "$f" $new_name
+    fi
+  done
+}
+
+function rm_edited() { 
+  [ -e edited/ ] || { echo "There are no photos that have been edited"; return 1; }
+  mkdir originals; 
+  for f in edited/*; do 
+    mv -v `basename "$f" | sed 's/-edited//'` originals/; 
+  done;
+  mv edited/* .
+  rmdir edited
+}
+
+function mm() {
+  [ $# -eq 1 ] || { echo "provide a dirname (only one)"; return; }
+  mkdir -p "$1"
+  cd "$1"
+}
+
+function mark() { 
+  for i in `seq 5`; do
+    printf "\e[1;104m%-`tput cols`s\e[m"
+#    printf "\e[1;104m%-`tput cols`s\e[m" | sed 's/ /-/g'
+  done
+}
+
+function count() { 
+  ls -1 "$@" | wc -l
+}
+
+function desk() {
+  local SAVED_IFS=$IFS
+  IFS=$(echo -en "\n\b")
+  mv -v $@ ~/Desktop
+  IFS=$SAVED_IFS
+}
+
+function trim() { 
+  echo "$@ "| sed 's/^[ \t\n]*//' | sed 's/[ \t\n]*$//'
+}
+
+function abs() { 
+  for f in $@; do
+    (cd `dirname $f`; echo `pwd`/`basename $f`)
+  done
+}
+
+function go() {
+  if [ $# -eq 0 ]; then
+    echo "usage: go <bookmark name>"
+    echo "special names are:"
+    echo -e "\tmark <name> - store the pwd under name"
+    echo -e "\tlist - list the stored names"
+  elif [ "$1" == "mark" ]; then
+    [ $# -eq 2 ] || { echo "must provide a name to mark"; return 1; }
+    echo $2,`pwd` >> ~/.go
+    echo "marked '`pwd`' as '$2'"
+  elif [ "$1" == "list" ]; then
+    cat ~/.go
+  else
+    SAVED_IFS=$IFS
+    IFS=$(echo -en "\n\b")
+    for line in `cat ~/.go`; do
+      tag=`echo $line | cut -d ',' -f 1`
+      dest="`echo $line | cut -d ',' -f 2-`"
+      if [ "$1" == "$tag" ]; then
+        cd "$dest"
+        IFS=$SAVED_IFS
+        return 0;
+      fi
+    done
+    [ "" == "$togo" ] && { echo "Can't find bookmark for '$1'"; return 1; }
+    [ -e "$togo" ] || { echo "Can't go to '$togo' because it doesn't exist"; return 1; }
+  fi
+}
+
+_go_complete() {
+  cur=${COMP_WORDS[COMP_CWORD]}
+  if [ "$cur" == "" ]; then
+    COMPREPLY=(`cat ~/.go | cut -d ',' -f 1`)
+  else
+    for opt in `cat ~/.go | cut -d ',' -f 1`; do
+      if [[ $opt =~ $cur ]]; then
+        COMPREPLY="$COMPREPLY $opt"
+      fi
+    done
+    COMPREPLY=($COMPREPLY)
+  fi
+}
+complete -o default -o nospace -F _go_complete go
+
+###############################################################################
+# django functions
+###############################################################################
+function pshell() {
+  [ -e 'manage.py' ] || { echo "No manage.py to use"; exit 1; }
+
+  python manage.py shell
+}
+
+alias ss='if [ -e manage.py ]; then python manage.py runserver; else echo No manage.py; fi'
+alias dshell='if [ -e manage.py ]; then python manage.py shell; else echo No manage.py; fi'
+
+###############################################################################
+# GIT functions
+###############################################################################
+function git-init-ignore(){ 
+  echo ".DS_Store" >> .gitignore
+  echo "*.bk" >> .gitignore
+  echo "*.pyc" >> .gitignore
+  echo "*.swp" >> .gitignore
+  echo "db/*" >> .gitignore
+}
+
+# credit: http://www.jayway.com/2014/01/15/how-to-switch-jdk-version-on-mac-os-x-maverick/
+function setjdk() {
+ if [ $# -ne 0 ]; then
+  removeFromPath '/System/Library/Frameworks/JavaVM.framework/Home/bin'
+  if [ -n "${JAVA_HOME+x}" ]; then
+   removeFromPath $JAVA_HOME
+  fi
+  export JAVA_HOME=`/usr/libexec/java_home -v $@`
+  export PATH=$JAVA_HOME/bin:$PATH
+ fi
+}
+
+function removeFromPath() {
+ export PATH=$(echo $PATH | sed -E -e "s;:$1;;" -e "s;$1:?;;")
+}
+
+function color_git_ps () {
+  if [ "`git config core.name`" == "home" ]; then
+    return
+  else
+    __git_ps1 "$@"
+  fi
+}
+
+# <grey>user@host <cyan>[pwd] 
+# <reset>$ 
+GIT_PS1_SHOWCOLORHINTS=true
+GIT_PS1_SHOWUNTRACKEDFILES=true
+GIT_PS1_SHOWSTASHSTATE=true
+GIT_PS1_SHOWDIRTYSTATE=true
+  
+#export PS1='\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\[\e[1;36m\]$(__git_ps1 "(%s)")]\n\[\e[0m\]$ '
+#export PS1='\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\[\e[1;36m\]$(color_git_ps "(%s)")]\n\[\e[0m\]$ '
+export PS1='\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\[\e[1;36m\]]\n\[\e[0m\]$ '
+
+## see: https://langui.sh/2014/03/10/wunused-command-line-argument-hard-error-in-future-is-a-harsh-mistress/
+export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
+
+###
+# ALIASES 
+###
+alias ls='ls -G'
+alias sl='ls'
+alias s='ls'
+alias ll='ls -alrh'
+alias grep='grep --color=auto'
+alias vim='vim -p'
+#alias vim='mvim -v'
+alias watch='watch -d -n 1'
+
+alias source_profile='source ~/.profile'
+alias path='echo $PATH | tr ":" "\n"'
+alias stamp='date +%y%m%d_%H%M'
+
+alias ssh='ssh -A'
+alias gitamend='git commit --amend'
+alias gst='git status'
+alias gi='vim .gitignore'
+alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
+alias ping8s='ping 8.8.8.8'
+
+
+alias disable_searchlight='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist'
+alias enable_searchlight='sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist'
+alias sublime='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
+
+###
+# HISTORY
+###
+shopt -s cmdhist
+HISTCONTROL=ignoreboth
+HISTSIZE=10000
+HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:mount:umount:[ \t]*"
+
+###
+# PATH
+###
+PATH="/usr/local/heroku/bin:$PATH"
+PATH="~/local/bin:$PATH"
+
