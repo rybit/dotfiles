@@ -6,4 +6,4 @@ function names_only() {
 }
 
 alias ls='ls --color=auto'
-alias edit_bash_rc='edit_and_source ~/.bashrc'
+alias edit_bash_rc='edit_and_source ~/.bash_rc'
