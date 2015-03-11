@@ -13,6 +13,7 @@ alias path='echo $PATH | tr ":" "\n"'
 alias stamp='date +%y%m%d_%H%M'
 
 alias source_profile='source ~/.profile'
+alias edit_shared_rc='vim ~/.shared_rc && source ~/.shared_rc'
 
 alias ping8s='ping 8.8.8.8'
 
@@ -144,9 +145,8 @@ function git-init-ignore(){
 ###############################################################################
 shopt -s cmdhist
 HISTCONTROL=ignoreboth
-#HISTCONTROL=ignoredups
 HISTSIZE=10000
-HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:[ \t]*"
+HISTIGNORE="&:ls:[bf]g:exit:pwd:clear"
 
 ###############################################################################
 # PATH
