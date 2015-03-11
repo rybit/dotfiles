@@ -32,19 +32,6 @@ function stash() {
   mv -v "$@" stash/
 }
 
-function edit_and_source() { 
-  [ $# -eq 1 ] || { echo "must provide a file to use"; return 1; }
-  [ -e "$1" ] || { echo "'$1' doesn't exist"; return 2; }
-  vim "$1"
-  var ret = $?
-  if [ $? -eq 0 ]; then
-    source "$1"
-  else
-    echo "Editing '$1' didn't have a clean exit - not sourcing"
-    return $ret
-  fi
-}
-
 function mkmv() {
   [ $# -eq 1 ] || { echo "provide a dirname (only one)"; return; }
   mkdir -p "$1"
@@ -157,8 +144,9 @@ function git-init-ignore(){
 ###############################################################################
 shopt -s cmdhist
 HISTCONTROL=ignoreboth
+#HISTCONTROL=ignoredups
 HISTSIZE=10000
-HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:mount:umount:[ \t]*"
+HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:[ \t]*"
 
 ###############################################################################
 # PATH
