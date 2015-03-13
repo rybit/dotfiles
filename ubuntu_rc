@@ -6,5 +6,7 @@ function names_only() {
 }
 
 alias ls='ls --color=auto'
-alias edit_profile='vim ~/.profile && source ~/.profile'
+alias edit-profile='vim ~/.profile && source ~/.profile'
+
+alias start-sandbox='cd ~/pg/yelp-main && sandbox -v --minimal'
 

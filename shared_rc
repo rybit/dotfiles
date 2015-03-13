@@ -9,11 +9,13 @@ alias vim='vim -p'
 alias watch='watch -d -n 1'
 alias ssh='ssh -A'
 
+alias g='goto'
+
 alias path='echo $PATH | tr ":" "\n"'
 alias stamp='date +%y%m%d_%H%M'
 
 alias source_profile='source ~/.profile'
-alias edit_shared_rc='vim ~/.shared_rc && source ~/.shared_rc'
+alias edit-sharedrc='vim ~/.shared_rc && source ~/.shared_rc'
 
 alias ping8s='ping 8.8.8.8'
 
@@ -55,22 +57,22 @@ function abs() {
   done
 }
 
-function go() {
+function goto() {
   if [ $# -eq 0 ]; then
-    echo "usage: go <bookmark name>"
+    echo "usage: goto <bookmark name>"
     echo "special names are:"
     echo -e "\tmark <name> - store the pwd under name"
     echo -e "\tlist - list the stored names"
   elif [ "$1" == "mark" ]; then
     [ $# -eq 2 ] || { echo "must provide a name to mark"; return 1; }
-    echo $2,`pwd` >> ~/.go
+    echo $2,`pwd` >> ~/.goto-bookmarks
     echo "marked '`pwd`' as '$2'"
   elif [ "$1" == "list" ]; then
-    cat ~/.go
+    cat ~/.goto-bookmarks
   else
     SAVED_IFS=$IFS
     IFS=$(echo -en "\n\b")
-    for line in `cat ~/.go`; do
+    for line in `cat ~/.goto-bookmarks`; do
       tag=`echo $line | cut -d ',' -f 1`
       dest="`echo $line | cut -d ',' -f 2-`"
       if [ "$1" == "$tag" ]; then
@@ -84,12 +86,12 @@ function go() {
   fi
 }
 
-_go_complete() {
+_goto_complete() {
   cur=${COMP_WORDS[COMP_CWORD]}
   if [ "$cur" == "" ]; then
-    COMPREPLY=(`cat ~/.go | cut -d ',' -f 1`)
+    COMPREPLY=(`cat ~/.goto-bookmarks | cut -d ',' -f 1`)
   else
-    for opt in `cat ~/.go | cut -d ',' -f 1`; do
+    for opt in `cat ~/.goto-bookmarks | cut -d ',' -f 1`; do
       if [[ $opt =~ $cur ]]; then
         COMPREPLY="$COMPREPLY $opt"
       fi
@@ -97,7 +99,8 @@ _go_complete() {
     COMPREPLY=($COMPREPLY)
   fi
 }
-complete -o default -o nospace -F _go_complete go
+complete -o default -o nospace -F _goto_complete goto
+complete -o default -o nospace -F _goto_complete g
 
 ###############################################################################
 # VIM 
