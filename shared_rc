@@ -5,9 +5,9 @@ alias sl='ls'
 alias s='ls'
 alias ll='ls -alrh'
 alias grep='grep --color=auto'
-alias vim='vim -p'
 alias watch='watch -d -n 1'
 alias ssh='ssh -A'
+alias pretty_json='python -m json.tool'
 
 alias g='goto'
 
@@ -20,7 +20,7 @@ alias edit-sharedrc='vim ~/.shared_rc && source ~/.shared_rc'
 alias ping8s='ping 8.8.8.8'
 
 function f(){
-  find . -name "$@"
+  find . -iname "*$@*"
 }
 
 function unstash() { 
@@ -105,8 +105,32 @@ complete -o default -o nospace -F _goto_complete g
 ###############################################################################
 # VIM 
 ###############################################################################
+alias vim='vim -p'
+
 function vimrc() {
   vim ~/.vimrc
+}
+
+function vimfind() {
+  [ $# -eq 1 ] || { echo "What do you want me to find?"; return 1; }
+  w=$(find . -iname "*$@*")
+  if [ "$w" == "" ]; then
+    echo "Failed to find $1"
+    return 1
+  fi
+
+  vim -p "$w"
+}
+
+function vimwhich() {
+  [ $# -eq 1 ] || { echo "What do you want me to find?"; return 1; }
+  w="$(which $1)"
+  if [ "$w" == "" ]; then
+    echo "Failed to find $1"
+    return 1
+  fi
+
+  vim "$w"
 }
 
 function vim_script(){ 
