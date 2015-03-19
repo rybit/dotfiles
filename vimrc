@@ -39,7 +39,7 @@ set backupdir=~/.vim/backup
 set directory=~/.vim/temp
 
 set hlsearch                    " highlight the search term
-set tabstop=4
+set tabstop=2
 set shiftround                  " always round indents to multiple of shiftwidth
 set copyindent                  " use existing indents for new indents
 set expandtab                   " expand <Tab>s with spaces; death to tabs!
@@ -51,7 +51,6 @@ set hidden
 set number
 set ruler
 set wrap
-set list 
 set list                        " show invisible characters
 set listchars=tab:>·,trail:·    " but only show tabs and trailing whitespace
 set wildmenu                    " turn on wild menu :e <Tab>
@@ -65,10 +64,10 @@ set noerrorbells
 set shell=bash
 
 " spelling
-if v:version >= 700
-  " Enable spell check for text files
-  autocmd BufNewFile,BufRead *.txt setlocal spell spelllang=en
-endif
+"#if v:version >= 700
+"#  " Enable spell check for text files
+"#  autocmd BufNewFile,BufRead *.txt setlocal spell spelllang=en
+"#endif
 
 "nnoremap <C-m> :set mouse=a<CR>
 "nnoremap <C-M> :set mouse=<CR>
@@ -90,7 +89,7 @@ let g:airline#extensions#tabline#enabled = 1
 
 nnoremap <C-Left> :tabprev<CR>
 nnoremap <C-Right> :tabnext<CR>
-"nnoremap <C-t> :tabnew
+nnoremap <C-t> :tabnew
 "nnoremap <C-[> :tabprev<CR>
 "nnoremap <C-]> :tabnext<CR>
 nnoremap <C--> :vertical res -5
@@ -130,3 +129,6 @@ autocmd BufWrite *.coffee :call DeleteTrailingWS()
 
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+
+autocmd BufRead,BufNewFile *.txt setlocal wrap linebreak nolist tw=120
+autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4
