@@ -1,4 +1,5 @@
-###############################################################################
+#!/bin/bash
+################################################################################
 # SYSTEM
 ###############################################################################
 alias sl='ls'
@@ -57,41 +58,129 @@ function abs() {
   done
 }
 
-function goto() {
-  if [ $# -eq 0 ]; then
-    echo "usage: goto <bookmark name>"
-    echo "special names are:"
-    echo -e "\tmark <name> - store the pwd under name"
-    echo -e "\tlist - list the stored names"
-  elif [ "$1" == "mark" ]; then
-    [ $# -eq 2 ] || { echo "must provide a name to mark"; return 1; }
-    echo $2,`pwd` >> ~/.goto-bookmarks
-    echo "marked '`pwd`' as '$2'"
+function sendto() {
+  usage="\
+    usage: sendto <bookmark name> <file..>\n \
+    special names are:\n \
+    \tmark <name> <place> - store the place to under the name\n \
+    \tlist - list the stored names\n \
+    examples:\n \
+    \t$ sendto mark dev-home dev:~/\n \
+    \t$ sendto mark dev-playground dev:~/pg/\n \
+    \t$ sendto dev-home thisfile thatfile \# equivalent of scp thisfile thatfile dev:~/\n \
+  "
+  conf="$HOME/.sendto-bookmarks"
+  [ -e $conf ] || { touch $conf; }
+
+  if [ "$1" == "mark" ]; then
+    [ $# -eq 3 ] || { echo "must provide name and place to mark"; echo -e $usage; return 1; }
+    tag=`echo $2 | tr [:space:] "_"`
+    echo "$2 $3" >> $conf
   elif [ "$1" == "list" ]; then
-    cat ~/.goto-bookmarks
+    cat $conf
+    return 0
+  elif [ $# -lt 2 ]; then
+    echo -e $usage
+    return 1
+  fi
+  
+  # now we know we're sending something
+  SAVED_IFS=$IFS
+  IFS=$(echo -en "\n\b")
+  mark=$1
+  shift
+  final_dest=""
+  for line in `cat $conf`; do
+    tag=`echo $line | cut -d ' ' -f 1`
+    if [ "$mark" == "$tag" ]; then
+      final_dest=`echo $line | cut -d ' ' -f 2`
+      break
+    fi
+  done
+  IFS=$SAVED_IFS
+  if [ "" == "$final_dest" ]; then 
+    echo "Can't find a book mark for '$mark'"
+    echo "options:"
+    cat $conf 
+    return 1
+  fi
+
+  # found it and we're all good
+  scp $@ $dest
+}
+
+function _sendto() {
+  conf="$HOME/.sendto-bookmarks"
+  cur=${COMP_WORDS[COMP_CWORD]}
+  if [ "$cur" == "" ]; then
+    COMPREPLY=(`cat $conf | cut -d ' ' -f 1`)
   else
-    SAVED_IFS=$IFS
-    IFS=$(echo -en "\n\b")
-    for line in `cat ~/.goto-bookmarks`; do
-      tag=`echo $line | cut -d ',' -f 1`
-      dest="`echo $line | cut -d ',' -f 2-`"
-      if [ "$1" == "$tag" ]; then
-        cd "$dest"
-        IFS=$SAVED_IFS
-        return 0;
+    for opt in `cat $conf | cut -d ' ' -f 1`; do
+      if [[ $opt =~ $cur ]]; then
+        COMPREPLY="${COMPREPLY} $opt"
       fi
     done
-    [ "" == "$togo" ] && { echo "Can't find bookmark for '$1'"; return 1; }
-    [ -e "$togo" ] || { echo "Can't go to '$togo' because it doesn't exist"; return 1; }
+    COMPREPLY=($COMPREPLY)
   fi
+}
+complete -o default -o nospace -F _sendto sendto
+
+function goto() {
+  usage="
+    usage: goto <bookmark>\n \
+    special names are: \n\
+    \tmark <name> : store the pwd under the name\n\
+    \tlist        : list the bookmarks
+  "
+  conf="$HOME/.goto-bookmarks"
+  [ -e $conf ] || { touch $conf; }
+
+  if [ $# -eq 0 ]; then
+    echo -e $usage
+    return 1
+  elif [ "$1" == "mark" ]; then
+    [ $# -eq 2 ] || { echo "must provide a name to mark"; echo -e $usage; return 1; }
+    echo $2 `pwd` >> $conf
+    echo "marked '`pwd`' as '$2'"
+    return 0
+  elif [ "$1" == "list" ]; then
+    cat $conf
+    return 0
+  fi
+
+  SAVED_IFS=$IFS
+  IFS=$(echo -en "\n\b")
+  final_dest=""
+  for line in `cat ~/.goto-bookmarks`; do
+    tag=`echo $line | cut -d ' ' -f 1`
+    if [ "$1" == "$tag" ]; then
+      final_dest="`echo $line | cut -d ' ' -f 2-`"
+      break;
+    fi
+  done
+  IFS=$SAVED_IFS
+
+  if [ "" == "$final_dest" ]; then
+    echo "Can't find bookmark '$1'"
+    echo "options:"
+    cat $conf
+    return 0
+  elif [ -e "$final_dest" ]; then
+    cd "$final_dest"
+  else
+    echo "Can't go to '$final_dest' because it doesn't exist"
+    return 1
+  fi
+
 }
 
 _goto_complete() {
+  conf="$HOME/.goto-bookmarks"
   cur=${COMP_WORDS[COMP_CWORD]}
   if [ "$cur" == "" ]; then
-    COMPREPLY=(`cat ~/.goto-bookmarks | cut -d ',' -f 1`)
+    COMPREPLY=(`cat $conf | cut -d ' ' -f 1`)
   else
-    for opt in `cat ~/.goto-bookmarks | cut -d ',' -f 1`; do
+    for opt in `cat $conf | cut -d ' ' -f 1`; do
       if [[ $opt =~ $cur ]]; then
         COMPREPLY="$COMPREPLY $opt"
       fi
