@@ -131,4 +131,5 @@ autocmd BufWrite *.coffee :call DeleteTrailingWS()
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 autocmd BufRead,BufNewFile *.txt setlocal wrap linebreak nolist tw=120
+autocmd BufRead,BufNewFile *.sh setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4
