@@ -192,6 +192,24 @@ complete -o default -o nospace -F _goto_complete goto
 complete -o default -o nospace -F _goto_complete g
 
 ###############################################################################
+# TMUX
+###############################################################################
+alias tl='tmux list-sessions'
+
+function ta() {
+  sessions=$(tmux list-sessions | wc -l)
+  if [ $sessions -eq 1 ]; then
+    is_attached=$(tmux list-sessions | grep attached)
+    if [ ! "$is_attached" == "" ]; then
+      echo "only one session, and it is already attached."
+      return 1
+    fi
+  fi
+
+  tmux attach-session $@
+}
+
+###############################################################################
 # VIM 
 ###############################################################################
 alias vim='vim -p'

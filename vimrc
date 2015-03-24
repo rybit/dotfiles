@@ -87,11 +87,11 @@ autocmd FileType python setlocal completeopt-=preview
 " airline
 let g:airline#extensions#tabline#enabled = 1
 
-nnoremap <C-Left> :tabprev<CR>
-nnoremap <C-Right> :tabnext<CR>
-nnoremap <C-t> :tabnew
-"nnoremap <C-[> :tabprev<CR>
-"nnoremap <C-]> :tabnext<CR>
+"nnoremap <C-Left> :tabprev<CR>
+"nnoremap <C-Right> :tabnext<CR>
+"nnoremap <C-t> :tabnew
+nnoremap <C-[> :tabprev<CR>
+nnoremap <C-]> :tabnext<CR>
 nnoremap <C--> :vertical res -5
 nnoremap <C-+> :vertical res +5
 
