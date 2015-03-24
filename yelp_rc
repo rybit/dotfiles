@@ -2,6 +2,6 @@ alias mount_dev='sshfs -p 22 ryanneal@dev5-devc:/nail/home/ryanneal ~/devfs/ -oa
 alias dev='ssh -A ryanneal@dev5-devc'
 
 function yclone() {
-  [ $# -eq 1 ] || { echo "Must provide a repo to clone"; exit 1; }
+  [ $# -eq 1 ] || { echo "Must provide a repo to clone"; return 1; }
   git clone git@git.yelpcorp.com:$1 
 }
