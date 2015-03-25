@@ -20,7 +20,7 @@ Plugin 'bling/vim-bufferline'
 Plugin 'chrisbra/csv.vim'
 Plugin 'edkolev/promptline.vim'
 Plugin 'davidhalter/jedi-vim'
-Plugin 'nvie/vim-flak8'
+Plugin 'andviro/flake8-vim'
 
 call vundle#end()
 filetype plugin indent on    " required
@@ -138,3 +138,21 @@ noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 autocmd BufRead,BufNewFile *.txt setlocal wrap linebreak nolist tw=120
 autocmd FileType sh setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4
+
+" flake8
+let g:PyFlakeOnWrite = 1
+let g:PyFlakeCheckers = 'pep8'
+" let g:PyFlakeCheckers = 'pep8,mccabe,frosted'
+let g:PyFlakeSigns = 1
+
+" syntastic
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+"
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
+"
+"let g:syntastic_python_checker_args='--ignore=C0301'
