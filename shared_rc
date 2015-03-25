@@ -24,13 +24,13 @@ function f(){
   find . -iname "*$@*"
 }
 
-function unstash() { 
+function unstash() {
   [ -e 'stash' ] || { echo "no stash"; return 1; }
   mv -v stash/* .
   rmdir stash
 }
 
-function stash() { 
+function stash() {
   [ ! -e 'stash' ] || { echo "already have a stash! can't do it"; return 1; }
   mkdir stash/
   mv -v "$@" stash/
@@ -42,17 +42,17 @@ function mkmv() {
   cd "$1"
 }
 
-function mark() { 
+function mark() {
   for i in `seq 5`; do
     printf "\e[1;104m%-`tput cols`s\e[m"
   done
 }
 
-function trim() { 
+function trim() {
   echo "$@ "| sed 's/^[ \t\n]*//' | sed 's/[ \t\n]*$//'
 }
 
-function abs() { 
+function abs() {
   for f in $@; do
     (cd `dirname $f`; echo `pwd`/`basename $f`)
   done
@@ -83,7 +83,7 @@ function sendto() {
     echo -e $usage
     return 1
   fi
-  
+
   # now we know we're sending something
   SAVED_IFS=$IFS
   IFS=$(echo -en "\n\b")
@@ -98,10 +98,10 @@ function sendto() {
     fi
   done
   IFS=$SAVED_IFS
-  if [ "" == "$final_dest" ]; then 
+  if [ "" == "$final_dest" ]; then
     echo "Can't find a book mark for '$mark'"
     echo "options:"
-    cat $conf 
+    cat $conf
     return 1
   fi
 
@@ -205,12 +205,16 @@ function ta() {
       return 1
     fi
   fi
+  if [ $# -eq 0 ]; then
+    tmux attach
+  else
+    tmux attach-session $@
+  fi
 
-  tmux attach-session $@
 }
 
 ###############################################################################
-# VIM 
+# VIM
 ###############################################################################
 alias vim='vim -p'
 
@@ -240,10 +244,10 @@ function vimwhich() {
   vim "$w"
 }
 
-function vim_script(){ 
+function vim_script(){
   [ $# -eq 1 ] || { echo "Provide the name of the script to start"; return 1; }
   [ ! -e "$1" ] || { echo "can't start a script that exists already"; return 1; }
-  
+
   echo "#!/bin/bash" > "$1"
   chmod +x "$1"
   vim "$1"
@@ -252,21 +256,25 @@ function vim_script(){
 ###############################################################################
 # PYTHON
 ###############################################################################
-function activate() { 
-  activate_script=`find . -name "activate"`
-  [ -e "$activate_script" ] || { echo "Failed to find a virtual env"; return 1; }
+function activate() {
+  dir='.'
+  if [ $# -eq 1 ]; then
+    dir="$1"
+  fi
+  activate_script=`find "$dir" -name "activate"`
+  [ -e "$activate_script" ] || { echo "Failed to find a virtual env under '$dir'"; return 1; }
   source "$activate_script"
 }
 
 ###############################################################################
-# GIT 
+# GIT
 ###############################################################################
 alias gitamend='git commit --amend'
 alias gst='git status'
 alias gitignore='vim .gitignore'
 alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
-function git-init-ignore(){ 
+function git-init-ignore(){
   echo ".DS_Store" >> .gitignore
   echo "*.bk" >> .gitignore
   echo "*.pyc" >> .gitignore
