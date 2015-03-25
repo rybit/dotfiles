@@ -20,6 +20,7 @@ Plugin 'bling/vim-bufferline'
 Plugin 'chrisbra/csv.vim'
 Plugin 'edkolev/promptline.vim'
 Plugin 'davidhalter/jedi-vim'
+Plugin 'nvie/vim-flak8'
 
 call vundle#end()
 filetype plugin indent on    " required
@@ -40,10 +41,11 @@ set directory=~/.vim/temp
 
 set hlsearch                    " highlight the search term
 set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set expandtab                   " expand <Tab>s with spaces; death to tabs!
 set shiftround                  " always round indents to multiple of shiftwidth
 set copyindent                  " use existing indents for new indents
-set expandtab                   " expand <Tab>s with spaces; death to tabs!
-
 
 set showmatch
 set incsearch
@@ -57,11 +59,19 @@ set wildmenu                    " turn on wild menu :e <Tab>
 set wildmode=list:longest       " set wildmenu to list choice
 set wildignore=*.o,*~,*.pyc
 set nostartofline               " leave my cursor position alone!
-
 set lazyredraw
-
 set noerrorbells
 set shell=bash
+
+if maparg('<C-L>', 'n')==# ''
+  nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
+endif
+
+" red trailing space -- instead use the autocmd to remove them
+"autocmd Syntax * syn match ExtraWhitespace /\s\+$/      "trailing whitespace sucks
+"highlight ExtraWhitespace ctermbg=darkred guibg=#302030
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%120v.\+/        "81 is default
 
 " spelling
 "#if v:version >= 700
@@ -69,9 +79,17 @@ set shell=bash
 "#  autocmd BufNewFile,BufRead *.txt setlocal spell spelllang=en
 "#endif
 
-"nnoremap <C-m> :set mouse=a<CR>
-"nnoremap <C-M> :set mouse=<CR>
+" Delete trailing white space on save, useful for Python and CoffeeScript ;)
+func! DeleteTrailingWS()
+  exe "normal mz"
+  %s/\s\+$//ge
+  exe "normal `z"
+endfunc
+autocmd BufWrite *.py :call DeleteTrailingWS()
+autocmd BufWrite *.coffee :call DeleteTrailingWS()
+autocmd BufWrite * :call DeleteTrailingWS()
 
+" stupid common typos
 :command WQ wq
 :command Wq wq
 :command W w
@@ -87,24 +105,19 @@ autocmd FileType python setlocal completeopt-=preview
 " airline
 let g:airline#extensions#tabline#enabled = 1
 
-"nnoremap <C-Left> :tabprev<CR>
-"nnoremap <C-Right> :tabnext<CR>
-"nnoremap <C-t> :tabnew
-nnoremap <C-[> :tabprev<CR>
-nnoremap <C-]> :tabnext<CR>
-nnoremap <C--> :vertical res -5
-nnoremap <C-+> :vertical res +5
 
-" tabs
-nnoremap <silent> <A-Left> :execute 'silent! tabmove ' . (tabpagenr()-2)<CR>
-nnoremap <silent> <A-Right> :execute 'silent! tabmove ' . tabpagenr()<CR>
+"
+"nnoremap <C-m> :set mouse=a<CR>
+"nnoremap <C-M> :set mouse=<CR>
 
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
 map k gk
+
 " Map <Space> to / (search) and Ctrl-<Space> to ? (backwards search)
 map <space> /
 map <c-space> ?
+
 " Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
 nmap <M-j> mz:m+<cr>`z
 nmap <M-k> mz:m-2<cr>`z
@@ -118,18 +131,10 @@ if has("mac") || has("macunix")
   vmap <D-k> <M-k>
 endif
 
-" Delete trailing white space on save, useful for Python and CoffeeScript ;)
-func! DeleteTrailingWS()
-  exe "normal mz"
-  %s/\s\+$//ge
-  exe "normal `z"
-endfunc
-autocmd BufWrite *.py :call DeleteTrailingWS()
-autocmd BufWrite *.coffee :call DeleteTrailingWS()
-
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
+" Special formatting rules for certain types
 autocmd BufRead,BufNewFile *.txt setlocal wrap linebreak nolist tw=120
-autocmd BufRead,BufNewFile *.sh setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
+autocmd FileType sh setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4
