@@ -10,8 +10,6 @@ alias watch='watch -d -n 1'
 alias ssh='ssh -A'
 alias pretty_json='python -m json.tool'
 
-alias g='goto'
-
 alias path='echo $PATH | tr ":" "\n"'
 alias stamp='date +%y%m%d_%H%M'
 
@@ -125,9 +123,9 @@ function _sendto() {
 }
 complete -o default -o nospace -F _sendto sendto
 
-function goto() {
+function gt() {
   usage="
-    usage: goto <bookmark>\n \
+    usage: gt <bookmark>\n \
     special names are: \n\
     \tmark <name> : store the pwd under the name\n\
     \tlist        : list the bookmarks
@@ -151,7 +149,7 @@ function goto() {
   SAVED_IFS=$IFS
   IFS=$(echo -en "\n\b")
   final_dest=""
-  for line in `cat ~/.goto-bookmarks`; do
+  for line in `cat $conf`; do
     tag=`echo $line | cut -d ' ' -f 1`
     if [ "$1" == "$tag" ]; then
       final_dest="`echo $line | cut -d ' ' -f 2-`"
@@ -188,30 +186,37 @@ _goto_complete() {
     COMPREPLY=($COMPREPLY)
   fi
 }
-complete -o default -o nospace -F _goto_complete goto
-complete -o default -o nospace -F _goto_complete g
+complete -o default -o nospace -F _goto_complete gt
 
 ###############################################################################
 # TMUX
 ###############################################################################
 alias tl='tmux list-sessions'
 
-function ta() {
-  sessions=$(tmux list-sessions | wc -l)
-  if [ $sessions -eq 1 ]; then
-    is_attached=$(tmux list-sessions | grep attached)
-    if [ ! "$is_attached" == "" ]; then
-      echo "only one session, and it is already attached."
-      return 1
+t_fixssh() {
+  for key in SSH_AUTH_SOCK SSH_CONNECTION SSH_CLIENT; do
+    if (tmux show-environment | grep "^${key}" > /dev/null); then
+      value=`tmux show-environment | grep "^${key}" | sed -e "s/^[A-Z_]*=//"`
+      export ${key}="${value}"
     fi
+  done
+}
+
+function ta() {
+  sessions=$(tmux list-sessions | grep -v attached)
+  if [ "$sessions" == "" ]; then
+    echo "There are no unattached sessions!"
+    return 1
   fi
+
   if [ $# -eq 0 ]; then
     tmux attach
   else
     tmux attach-session $@
   fi
-
+  t_fixssh
 }
+
 
 ###############################################################################
 # VIM

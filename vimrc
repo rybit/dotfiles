@@ -16,11 +16,12 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
 Plugin 'bling/vim-bufferline'
-"Plugin 'scrooloose/syntastic'
+Plugin 'jelera/vim-javascript-syntax'
 Plugin 'chrisbra/csv.vim'
 Plugin 'edkolev/promptline.vim'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'andviro/flake8-vim'
+Plugin 'chriskempson/base16-vim'
 
 call vundle#end()
 filetype plugin indent on    " required
@@ -89,6 +90,9 @@ autocmd BufWrite *.py :call DeleteTrailingWS()
 autocmd BufWrite *.coffee :call DeleteTrailingWS()
 autocmd BufWrite * :call DeleteTrailingWS()
 
+"tab commands
+nnoremap <C-t> <CR>:tabnew<CR>
+
 " stupid common typos
 :command WQ wq
 :command Wq wq
@@ -103,7 +107,7 @@ let g:jedi#documentation_command = "K"
 autocmd FileType python setlocal completeopt-=preview
 
 " airline
-let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#enabled = 1
 
 
 "
@@ -145,14 +149,17 @@ let g:PyFlakeCheckers = 'pep8'
 " let g:PyFlakeCheckers = 'pep8,mccabe,frosted'
 let g:PyFlakeSigns = 1
 
-" syntastic
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-"
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-"
-"let g:syntastic_python_checker_args='--ignore=C0301'
+fun! s:ToggleMouse()
+  if !exists("s:old_mouse")
+    let s:old_mouse = "a"
+  endif
+
+  if &mouse == ""
+    let &mouse = s:old_mouse
+    echo "Mouse is for Vim (" . &mouse . ")"
+  else
+    let s:old_mouse = &mouse
+    let &mouse=""
+    echo "Mouse is for terminal"
+  endif
+endfunction
