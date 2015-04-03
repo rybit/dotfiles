@@ -16,12 +16,14 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
 Plugin 'bling/vim-airline'
 Plugin 'bling/vim-bufferline'
+"Plugin 'ervandew/supertab'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'chrisbra/csv.vim'
 Plugin 'edkolev/promptline.vim'
-Plugin 'davidhalter/jedi-vim'
+"Plugin 'davidhalter/jedi-vim'
 Plugin 'andviro/flake8-vim'
-Plugin 'chriskempson/base16-vim'
+"Plugin 'chriskempson/base16-vim'
+Plugin 'airblade/vim-gitgutter'
 
 call vundle#end()
 filetype plugin indent on    " required
@@ -30,10 +32,12 @@ syntax on
 colorscheme desert
 
 " color columns 120+
-execute "set colorcolumn=" . join(range(120,335), ',')
-:hi ColorColumn ctermbg=234
+"execute "set colorcolumn=" . join(range(120,335), ',')
+set colorcolumn=120
+:hi colorcolumn ctermbg=grey
 
 set encoding=utf8
+set t_Co=256                    " use 256 colors
 set mouse=
 
 set backup
@@ -68,18 +72,6 @@ if maparg('<C-L>', 'n')==# ''
   nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 endif
 
-" red trailing space -- instead use the autocmd to remove them
-"autocmd Syntax * syn match ExtraWhitespace /\s\+$/      "trailing whitespace sucks
-"highlight ExtraWhitespace ctermbg=darkred guibg=#302030
-"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-"match OverLength /\%120v.\+/        "81 is default
-
-" spelling
-"#if v:version >= 700
-"#  " Enable spell check for text files
-"#  autocmd BufNewFile,BufRead *.txt setlocal spell spelllang=en
-"#endif
-
 " Delete trailing white space on save, useful for Python and CoffeeScript ;)
 func! DeleteTrailingWS()
   exe "normal mz"
@@ -90,9 +82,6 @@ autocmd BufWrite *.py :call DeleteTrailingWS()
 autocmd BufWrite *.coffee :call DeleteTrailingWS()
 autocmd BufWrite * :call DeleteTrailingWS()
 
-"tab commands
-nnoremap <C-t> <CR>:tabnew<CR>
-
 " stupid common typos
 :command WQ wq
 :command Wq wq
@@ -100,19 +89,40 @@ nnoremap <C-t> <CR>:tabnew<CR>
 :command Q q
 
 " NERDtree
-map <C-n> :NERDTreeToggle<CR>
+map <c-t> :NERDTreeToggle<CR>
 
 " jedi-vim
 let g:jedi#documentation_command = "K"
 autocmd FileType python setlocal completeopt-=preview
 
 " airline
-"let g:airline#extensions#tabline#enabled = 1
+" Enable the list of buffers
+let g:airline#extensions#tabline#enabled = 1
+
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
 
 
-"
-"nnoremap <C-m> :set mouse=a<CR>
-"nnoremap <C-M> :set mouse=<CR>
+" This allows buffers to be hidden if you've modified a buffer.
+" This is almost a must if you wish to use buffers in this way.
+set hidden
+
+" To open a new empty buffer
+" This replaces :tabnew which I used to bind to this mapping
+nmap <C-t> :enew<cr>
+
+" Move to the next buffer
+nmap <C-l> :bnext<CR>
+
+" Move to the previous buffer
+nmap <C-h> :bprevious<CR>
+
+" Close the current buffer and move to the previous one
+" This replicates the idea of closing a tab
+nmap <leader>bq :bp <BAR> bd #<CR>
+
+" Show all open buffers and their status
+nmap <leader>bl :ls<CR>
 
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
@@ -144,8 +154,9 @@ autocmd FileType sh setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4
 
 " flake8
-let g:PyFlakeOnWrite = 1
+let g:PyFlakeOnWrite = 0
 let g:PyFlakeCheckers = 'pep8'
+
 " let g:PyFlakeCheckers = 'pep8,mccabe,frosted'
 let g:PyFlakeSigns = 1
 

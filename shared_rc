@@ -14,7 +14,7 @@ alias path='echo $PATH | tr ":" "\n"'
 alias stamp='date +%y%m%d_%H%M'
 
 alias source_profile='source ~/.profile'
-alias edit-sharedrc='vim ~/.shared_rc && source ~/.shared_rc'
+alias sharedrc='vim ~/.shared_rc && source ~/.shared_rc'
 
 alias ping8s='ping 8.8.8.8'
 
@@ -221,8 +221,6 @@ function ta() {
 ###############################################################################
 # VIM
 ###############################################################################
-alias vim='vim -p'
-
 function vimrc() {
   vim ~/.vimrc
 }
@@ -235,7 +233,7 @@ function vimfind() {
     return 1
   fi
 
-  vim -p "$w"
+  vim "$w"
 }
 
 function vimwhich() {
@@ -276,6 +274,7 @@ function activate() {
 ###############################################################################
 alias gitamend='git commit --amend'
 alias gst='git status'
+alias gba='git branch -a'
 alias gitignore='vim .gitignore'
 alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
