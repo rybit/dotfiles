@@ -189,6 +189,13 @@ _goto_complete() {
 complete -o default -o nospace -F _goto_complete gt
 
 ###############################################################################
+# BINDINGS
+###############################################################################
+bind '\C-l:forward-word'
+bind '\C-h:backward-word'
+
+
+###############################################################################
 # TMUX
 ###############################################################################
 alias tl='tmux list-sessions'
@@ -209,12 +216,15 @@ function ta() {
     return 1
   fi
 
+  sess_id=`echo $sessions | head -n 1 | cut -d ':' -f 1`
+  echo $sessions
+  echo $sess_id
+
   if [ $# -eq 0 ]; then
-    tmux attach
+    tmux attach-session -t $sess_id
   else
     tmux attach-session $@
   fi
-  t_fixssh
 }
 
 

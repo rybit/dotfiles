@@ -62,7 +62,7 @@ set list                        " show invisible characters
 set listchars=tab:>·,trail:·    " but only show tabs and trailing whitespace
 set wildmenu                    " turn on wild menu :e <Tab>
 set wildmode=list:longest       " set wildmenu to list choice
-set wildignore=*.o,*~,*.pyc
+set wildignore=*.o,*~,*.pyc,*.egg-info
 set nostartofline               " leave my cursor position alone!
 set lazyredraw
 set noerrorbells
