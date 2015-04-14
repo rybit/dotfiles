@@ -191,8 +191,8 @@ complete -o default -o nospace -F _goto_complete gt
 ###############################################################################
 # BINDINGS
 ###############################################################################
-bind '\C-l:forward-word'
-bind '\C-h:backward-word'
+#bind '\C-l:forward-word'
+#bind '\C-h:backward-word'
 
 
 ###############################################################################
@@ -200,7 +200,7 @@ bind '\C-h:backward-word'
 ###############################################################################
 alias tl='tmux list-sessions'
 
-t_fixssh() {
+fixssh() {
   for key in SSH_AUTH_SOCK SSH_CONNECTION SSH_CLIENT; do
     if (tmux show-environment | grep "^${key}" > /dev/null); then
       value=`tmux show-environment | grep "^${key}" | sed -e "s/^[A-Z_]*=//"`
@@ -285,6 +285,8 @@ function activate() {
 alias gitamend='git commit --amend'
 alias gst='git status'
 alias gba='git branch -a'
+alias gc-='git checkout -'
+alias gcm='git checkout master'
 alias gitignore='vim .gitignore'
 alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
