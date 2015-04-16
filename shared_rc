@@ -269,6 +269,10 @@ function vim_script(){
 ###############################################################################
 # PYTHON
 ###############################################################################
+if [ -e '~/.pythonrc.py' ]; then
+  export PYTHONSTARTUP=~/.pythonrc.py
+fi
+
 function activate() {
   dir='.'
   if [ $# -eq 1 ]; then

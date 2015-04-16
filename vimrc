@@ -20,7 +20,7 @@ Plugin 'bling/vim-bufferline'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'chrisbra/csv.vim'
 Plugin 'edkolev/promptline.vim'
-"Plugin 'davidhalter/jedi-vim'
+Plugin 'davidhalter/jedi-vim'
 Plugin 'andviro/flake8-vim'
 "Plugin 'chriskempson/base16-vim'
 Plugin 'airblade/vim-gitgutter'
@@ -29,7 +29,8 @@ call vundle#end()
 filetype plugin indent on    " required
 
 syntax on
-colorscheme desert
+"colorscheme desert
+colorscheme jellybeans
 
 " color columns 120+
 "execute "set colorcolumn=" . join(range(120,335), ',')
