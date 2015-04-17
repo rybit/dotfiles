@@ -1,7 +1,25 @@
 alias mount_dev='sshfs -p 22 ryanneal@dev5-devc:/nail/home/ryanneal ~/devfs/ -oauto_cache,reconnect,defer_permissions,noappledouble,negative_vncache,volname=devfs'
-alias dev='ssh -A ryanneal@dev5-devc'
+
+function dev() {
+  if [ $# -eq 0 ]; then
+    number=5
+    cluster='c'
+  fi
+
+  if [ $# -eq 1 ]; then
+    number=`echo $1 | cut -b 1`
+    cluster=`echo $1 | cut -b 2`
+  fi
+
+  if [ $# -eq 2 ]; then
+    number=$1
+    cluster=$2
+  fi
+
+  ssh -A dev$number-dev$cluster
+}
 
 function yclone() {
   [ $# -eq 1 ] || { echo "Must provide a repo to clone"; return 1; }
-  git clone git@git.yelpcorp.com:$1 
+  git clone git@git.yelpcorp.com:$1
 }
