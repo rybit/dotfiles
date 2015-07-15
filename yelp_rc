@@ -5,6 +5,8 @@ alias mount_dev='sshfs -p 22 ryanneal@dev5-devc:/nail/home/ryanneal ~/devfs/ -oa
 alias pip-yelp-install='pip install --index-url https://pypi.yelpcorp.com/simple/'
 alias docker-trusty='docker run --rm -t -i docker-dev.yelpcorp.com/trusty_yelp:latest /bin/bash'
 
+SFX_AUTH_TOKEN='Yzk63RmHoiwHDfMutkPLAg'
+
 function dev() {
   if [ $# -eq 0 ]; then
     number=5
@@ -27,4 +29,12 @@ function dev() {
 function yclone() {
   [ $# -eq 1 ] || { echo "Must provide a repo to clone"; return 1; }
   git clone git@git.yelpcorp.com:$1
+}
+
+function ls_synapse() {
+  ls /var/run/synapse/services/$1*
+}
+
+function cat_synapse() {
+  cat /var/run/synapse/services/$1* | jq -r .
 }

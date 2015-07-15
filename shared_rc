@@ -9,13 +9,14 @@ alias grep='grep --color=auto'
 alias watch='watch -d -n 1'
 alias ssh='ssh -A'
 alias pretty_json='python -m json.tool'
+alias less='less -R'
 
 alias path='echo $PATH | tr ":" "\n"'
 alias stamp='date +%y%m%d_%H%M'
 
 alias source_profile='source ~/.profile'
 alias sharedrc='vim ~/.shared_rc && source ~/.shared_rc'
-
+alias only_files='cut -d ":" -f 1 | sort | uniq -c | sort -n -r'
 alias ping8s='ping 8.8.8.8'
 
 function f(){
@@ -300,7 +301,7 @@ function venv() {
         which_python='/usr/bin/python3.4';;
       *)
         echo "no python $2"
-        exit 1
+        return 1
         ;;
     esac
     virtualenv -p $which_python $venv_name
@@ -312,6 +313,8 @@ function venv() {
   if [ -e 'requirements.txt' ]; then
     echo "found requirements file - installing it into $venv_name"
     pip install -r requirements.txt
+  elif [ -e 'setup.py' ]; then
+    pip install -e .
   fi
 }
 
@@ -347,10 +350,11 @@ function git-init-ignore(){
 shopt -s cmdhist
 HISTCONTROL=ignoreboth
 HISTSIZE=10000
-HISTIGNORE="&:ls:[bf]g:exit:pwd:clear"
+HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:fs:sharedrc:vimrc:gst"
 
 ###############################################################################
 # PATH
 ###############################################################################
 PATH="~/local/bin:$PATH"
+
 
