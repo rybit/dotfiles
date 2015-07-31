@@ -1,15 +1,17 @@
 [ -e ~/.yelp_rc ] && { source ~/.yelp_rc; }
 [ -e ~/.shared_rc ] && { source ~/.shared_rc; }
+#curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
+[ -e ~/.git-completion.bash ] && { source ~/.git-completion.bash; }
 
-function size_dirs() { 
-  if [ $# -eq 0 ]; then 
+function size_dirs() {
+  if [ $# -eq 0 ]; then
     dir='.'
   else
     dir="$@"
-  fi 
+  fi
   set SAVED_IFS=$IFS
   IFS=$(echo -en "\n\b")
-  for f in `find "$dir" -depth 1 -type 'd' | sort`; do 
+  for f in `find "$dir" -depth 1 -type 'd' | sort`; do
     s=`ls -1 "$f" | wc -l`
     echo "$s $f"
   done
@@ -36,11 +38,11 @@ function rename_no_spaces() {
   done
 }
 
-function rm_edited() { 
+function rm_edited() {
   [ -e edited/ ] || { echo "There are no photos that have been edited"; return 1; }
-  mkdir originals; 
-  for f in edited/*; do 
-    mv -v `basename "$f" | sed 's/-edited//'` originals/; 
+  mkdir originals;
+  for f in edited/*; do
+    mv -v `basename "$f" | sed 's/-edited//'` originals/;
   done;
   mv edited/* .
   rmdir edited
@@ -78,13 +80,13 @@ function color_git_ps () {
   fi
 }
 
-# <grey>user@host <cyan>[pwd] 
-# <reset>$ 
+# <grey>user@host <cyan>[pwd]
+# <reset>$
 GIT_PS1_SHOWCOLORHINTS=true
 GIT_PS1_SHOWUNTRACKEDFILES=true
 GIT_PS1_SHOWSTASHSTATE=true
 GIT_PS1_SHOWDIRTYSTATE=true
-  
+
 #export PS1='\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\[\e[1;36m\]$(__git_ps1 "(%s)")]\n\[\e[0m\]$ '
 #export PS1='\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\[\e[1;36m\]$(color_git_ps "(%s)")]\n\[\e[0m\]$ '
 export PS1='\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\[\e[1;36m\]]\n\[\e[0m\]$ '
@@ -105,7 +107,7 @@ alias ss='if [ -e manage.py ]; then python manage.py runserver; else echo No man
 alias dshell='if [ -e manage.py ]; then python manage.py shell; else echo No manage.py; fi'
 
 ###############################################################################
-# ALIASES 
+# ALIASES
 ###############################################################################
 alias edit-profile='vim ~/.profile && source ~/.profile'
 alias disable_searchlight='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist'
