@@ -1,4 +1,9 @@
 set completion-ignore-case On
+set show-all-if-ambiguous on
+set visible-stats on
+set blink-matching-paren on
+set expand-tilde on
 
+"\C-w": backward-kill-word
 "\e[1;5D": backward-word
 "\e[1;5C": forward-word
