@@ -11,20 +11,25 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
-Plugin 'L9'
+
 Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
-Plugin 'bling/vim-airline'
-Plugin 'bling/vim-bufferline'
-"Plugin 'ervandew/supertab'
-Plugin 'jelera/vim-javascript-syntax'
-Plugin 'chrisbra/csv.vim'
-Plugin 'edkolev/promptline.vim'
-Plugin 'davidhalter/jedi-vim'
-"Plugin 'valloric/YouCompleteMe'
-Plugin 'andviro/flake8-vim'
-"Plugin 'chriskempson/base16-vim'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'bling/vim-bufferline'
+Plugin 'bling/vim-airline'
+Plugin 'edkolev/promptline.vim'
+
+Plugin 'L9'
+Plugin 'chrisbra/csv.vim'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'andviro/flake8-vim'
+"
+"Plugin 'ervandew/supertab'
+"Plugin 'valloric/YouCompleteMe'
+"Plugin 'chriskempson/base16-vim'
+
+Plugin 'jelera/vim-javascript-syntax'
+Plugin 'pangloss/vim-javascript'
 
 call vundle#end()
 filetype plugin indent on    " required
@@ -105,6 +110,12 @@ let g:airline#extensions#tabline#enabled = 1
 " Show just the filename
 let g:airline#extensions#tabline#fnamemod = ':t'
 
+" Ctrl-P
+nnoremap gm :CtrlPMixed<cr>
+nnoremap gl :CtrlPLine<cr>
+nnoremap gb :CtrlPBuffer<cr>
+nnoremap go :CtrlP<cr>
+nnoremap gr :CtrlPMRUFiles<cr>
 
 " This allows buffers to be hidden if you've modified a buffer.
 " This is almost a must if you wish to use buffers in this way.

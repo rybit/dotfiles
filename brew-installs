@@ -1,0 +1,39 @@
+# really want
+dos2unix
+git
+htop-osx
+iftop
+jq
+macvim
+ngrep
+nmap
+openssl
+python
+readline
+rlwrap
+tree
+watch
+wget
+
+# shit i end up with
+#go
+#node
+#
+#mongodb
+#sqlite
+#protobuf
+#
+#docker
+#
+## shit that came from somewhere
+#cmake
+#cscope
+#ctags
+#exercism
+#gdbm
+#gettext
+#gnu-sed
+#heroku-toolbelt
+#luajit
+#oniguruma
+#tag
