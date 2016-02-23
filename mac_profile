@@ -1,7 +1,8 @@
-[ -e ~/.yelp_rc ] && { source ~/.yelp_rc; }
+[ -e ~/.secret_rc ] && { source ~/.secret_rc; }
 [ -e ~/.shared_rc ] && { source ~/.shared_rc; }
 #curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
 [ -e ~/.git-completion.bash ] && { source ~/.git-completion.bash; }
+[ -e `brew --prefix`/etc/bash_completion ] && { source `brew --prefix`/etc/bash_completion; }
 
 function size_dirs() {
   if [ $# -eq 0 ]; then

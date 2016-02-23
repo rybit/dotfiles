@@ -6,6 +6,8 @@ ln -s `pwd`/inputrc ~/.inputrc
 # installing macvim
 brew reinstall macvim --HEAD --with-luajit --with-custom-icons --with-override-system-vim
 
+brew install git bash-completion
+
 mkdir -p ~/.vim/bundle
 mkdir -p ~/.vim/colors
 mkdir -p ~/.vim/backup

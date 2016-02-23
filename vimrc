@@ -36,8 +36,8 @@ filetype plugin indent on    " required
 
 syntax on
 "colorscheme desert
-"colorscheme jellybeans
-colorscheme hybrid
+colorscheme jellybeans
+"colorscheme hybrid
 
 " color columns 120+
 "execute "set colorcolumn=" . join(range(120,335), ',')
