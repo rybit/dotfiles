@@ -124,6 +124,44 @@ function _sendto() {
 }
 complete -o default -o nospace -F _sendto sendto
 
+###############################################################################
+# SSH-TO
+###############################################################################
+function sshto() {
+  usage="
+    usage: sshto <bookmark>\n \
+    special names are: \n \
+    \tadd <place> <hostname | ip>
+  "
+  conf="$HOME/.sshto-bookmarks"
+  [ -e $conf ] || { touch $conf; }
+  [ $# -ne 0 ] || { echo -e $usage; return 1; }
+
+  bookmark=$1
+  shift
+  if [ $bookmark == "add" ]; then
+    [ $# -gt 1 ] || { echo "must provide a name to mark"; echo -e $usage; return 1; }
+    bookmark=$1
+    egrep "^$bookmark " $conf > /dev/null
+    [ $? -eq 1 ] || { echo "There is a bookmark for '$bookmark' already"; return 1; }
+
+    echo "$@" >> $conf
+    echo "added $@"
+    return 0
+  fi
+
+  # find the bookmark now
+  line=$(egrep "^$bookmark " $conf)
+  [ $? -eq 0 ] || { echo "Failed to find bookmark '$bookmark'"; return 1; }
+
+  # split it
+  where="$(echo $line | cut -d ' ' -f 2-)"
+  ssh $where
+}
+
+###############################################################################
+# GOTO
+###############################################################################
 function gt() {
   usage="
     usage: gt <bookmark>\n \
@@ -133,11 +171,9 @@ function gt() {
   "
   conf="$HOME/.goto-bookmarks"
   [ -e $conf ] || { touch $conf; }
+  [ $# -ne 0 ] || { echo -e $usage; return 1; }
 
-  if [ $# -eq 0 ]; then
-    echo -e $usage
-    return 1
-  elif [ "$1" == "mark" ]; then
+  if [ "$1" == "mark" ]; then
     [ $# -eq 2 ] || { echo "must provide a name to mark"; echo -e $usage; return 1; }
     echo $2 `pwd` >> $conf
     echo "marked '`pwd`' as '$2'"
