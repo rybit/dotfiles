@@ -20,3 +20,7 @@ git clone https://github.com/w0ng/vim-hybrid ~/.vim/colors/hybrid.vim.git
 ln -s ~/.vim/colors/jellybeans.vim.git/colors/jellybeans.vim ~/.vim/colors/jellybeans.vim
 ln -s ~/.vim/colors/vim-hybrid.vim.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
 
+# install docker
+brew install docker docker-machine
+# create a docker image: docker-machine create --driver virtualbox default
+# add the commands to do docker things
