@@ -21,6 +21,7 @@ ln -s ~/.vim/colors/jellybeans.vim.git/colors/jellybeans.vim ~/.vim/colors/jelly
 ln -s ~/.vim/colors/vim-hybrid.vim.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
 
 # install docker
+brew cask install virtualbox
 brew install docker docker-machine
 # create a docker image: docker-machine create --driver virtualbox default
 # add the commands to do docker things
