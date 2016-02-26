@@ -1,0 +1,99 @@
+#! /usr/bin/env python
+
+import os
+import sys
+import xml.etree.ElementTree as et
+
+from argparse import ArgumentParser
+from xml.etree.ElementTree  import Element, SubElement, Comment
+from xml.dom import minidom
+
+
+def make_pom():
+    project = Element('project')
+    project.set('xmlns', 'http://maven.apache.org/POM/4.0.0')
+    project.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+    project.set('xmlns:schemaLocation', 'http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd')
+
+    el_with_text(project, 'modelVersion', '4.0.0')
+    el_with_text(project, 'name', prompt('name'))
+    el_with_text(project, 'groupId', prompt('group id'))
+    el_with_text(project, 'artifactId', prompt('artifact id'))
+    el_with_text(project, 'version', prompt('version', default='0.0.1-SNAPSHOT'))
+    el_with_text(project, 'packaging', prompt('packaging', default='jar'))
+
+    # placeholder values
+    SubElement(project, 'properties')
+    SubElement(project, 'dependencies')
+    plugins_el = SubElement(SubElement(project, 'build'), 'plugins')
+
+    # add in the utf-8 encoding
+    encoding_el = SubElement(plugins_el, 'plugin')
+    el_with_text(encoding_el, 'groupId', 'org.apache.maven.plugins')
+    el_with_text(encoding_el, 'artifactId', 'maven-resources-plugin')
+    el_with_text(encoding_el, 'version', '2.7')
+
+    cfg_el = SubElement(encoding_el, 'configuration')
+    el_with_text(cfg_el, 'encoding', 'UTF-8')
+
+    # set the compiler settings
+    java_version = prompt('java version', default='1.8')
+    compiler_el= SubElement(plugins_el, 'plugin')
+    el_with_text(compiler_el, 'groupId', 'org.apache.maven.plugins')
+    el_with_text(compiler_el, 'artifactId', 'maven-compiler-plugin')
+    el_with_text(compiler_el, 'version', '3.1')
+
+    cfg_el = SubElement(compiler_el, 'configuration')
+    el_with_text(cfg_el, 'compilerArgument', '-Xlint:unchecked')
+    el_with_text(cfg_el, 'debug', 'true')
+    el_with_text(cfg_el, 'source', java_version)
+    el_with_text(cfg_el, 'target', java_version)
+
+    SubElement(project, 'repositories')
+    SubElement(project, 'distributionManagement')
+
+    raw_xml = et.tostring(project, 'utf-8')
+    with open('pom.xml', 'w') as fp:
+        fp.write(minidom.parseString(raw_xml).toprettyxml(indent='  ', encoding='utf-8'))
+
+def make_java():
+    os.mkdir('src')
+    os.mkdir('src/main')
+    os.mkdir('src/main/java')
+    os.mkdir('src/main/resources')
+    os.mkdir('src/test')
+    os.mkdir('src/test/java')
+    os.mkdir('src/test/resources')
+
+def prompt(prompt_val, required = True, default = None):
+    rsp = ''
+    while not rsp and required:
+        if default:
+            prompt_val += ' [' + str(default) + ']'
+
+        rsp = raw_input(prompt_val + ': ')
+        if not rsp and default:
+            rsp = default
+    return rsp
+
+def el_with_text(parent, elemName, text):
+    el = SubElement(parent, elemName)
+    el.text = text
+    return el
+
+
+parser = ArgumentParser()
+parser.add_argument('type', choices=['pom', 'mvn', 'java'])
+
+layout = parser.parse_args().type
+if layout == 'mvn':
+    make_pom()
+    make_java()
+elif layout == 'java':
+    make_java()
+elif layout == 'pom':
+    make_pom()
+else:
+    print 'something is wrong'
+    sys.exit(1)
+
