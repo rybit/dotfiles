@@ -3,10 +3,6 @@ ln -s `pwd`/mac_profile ~/.profile
 ln -s `pwd`/vimrc ~/.vimrc
 ln -s `pwd`/inputrc ~/.inputrc
 
-# installing macvim
-brew reinstall macvim --HEAD --with-luajit --with-custom-icons --with-override-system-vim
-
-brew install git bash-completion
 
 mkdir -p ~/.vim/bundle
 mkdir -p ~/.vim/colors
@@ -20,8 +16,3 @@ git clone https://github.com/w0ng/vim-hybrid ~/.vim/colors/hybrid.vim.git
 ln -s ~/.vim/colors/jellybeans.vim.git/colors/jellybeans.vim ~/.vim/colors/jellybeans.vim
 ln -s ~/.vim/colors/vim-hybrid.vim.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
 
-# install docker
-brew cask install virtualbox
-brew install docker docker-machine
-# create a docker image: docker-machine create --driver virtualbox default
-# add the commands to do docker things

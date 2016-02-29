@@ -1,19 +1,26 @@
+# stuff for xcode
+xcode-select --install
+
+# brew itself
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
 # really want
-dos2unix
-git
-htop-osx
-iftop
-jq
-macvim
-ngrep
-nmap
-openssl
-python
-readline
-rlwrap
-tree
-watch
-wget
+brew install dos2unix htop-osx iftop jq ngrep nmap openssl readline rlwrap tree watch wget
+
+# dev languages
+brew install go node python
+
+# DB crap
+brew install sqlite mongodb
+
+# docker crap
+brew cask install virtualbox
+brew install docker docker-machine
+
+# installing macvim
+brew reinstall macvim --HEAD --with-luajit --with-custom-icons --with-override-system-vim
+
+brew install git bash-completion
 
 # shit i end up with
 #go
