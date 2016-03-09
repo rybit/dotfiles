@@ -3,7 +3,6 @@ ln -s `pwd`/mac_profile ~/.profile
 ln -s `pwd`/vimrc ~/.vimrc
 ln -s `pwd`/inputrc ~/.inputrc
 
-
 mkdir -p ~/.vim/bundle
 mkdir -p ~/.vim/colors
 mkdir -p ~/.vim/backup
@@ -16,3 +15,9 @@ git clone https://github.com/w0ng/vim-hybrid ~/.vim/colors/hybrid.vim.git
 ln -s ~/.vim/colors/jellybeans.vim.git/colors/jellybeans.vim ~/.vim/colors/jellybeans.vim
 ln -s ~/.vim/colors/vim-hybrid.vim.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
 
+# config git
+git config --global core.editor /usr/bin/vim
+git config --global user.name ryan
+git config --global user.email ry.neal@gmail.com
+
+pip install virtualenv
