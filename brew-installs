@@ -10,7 +10,7 @@ brew install git bash-completion ansible
 
 # dev languages
 brew install go node python ruby
-brew install bundle
+brew install rbenv
 
 # DB crap
 brew install sqlite mongodb postgres
