@@ -411,7 +411,7 @@ HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:fs:sharedrc:vimrc:gst"
 ###############################################################################
 # PATH
 ###############################################################################
-
+PATH=$PATH:/usr/local/sbin
 which rbenv > /dev/null
 [ $? -eq 1 ] || { eval "$(rbenv init -)"; }
 
