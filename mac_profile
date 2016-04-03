@@ -96,6 +96,12 @@ export PS1="\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\$(parse_git_branch)\[\e[1;36m\]]\n
 export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
 
 ###############################################################################
+# DNSMASQ
+###############################################################################
+alias dnsmasq_start='sudo launchctl start homebrew.mxcl.dnsmasq'
+alias dnsmasq_stop='sudo launchctl stop homebrew.mxcl.dnsmasq'
+
+###############################################################################
 # DJANGO
 ###############################################################################
 function pshell() {
