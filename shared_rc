@@ -124,6 +124,17 @@ function _sendto() {
 }
 complete -o default -o nospace -F _sendto sendto
 
+function forget_host(){
+  [ $# -eq 1 ] || { echo "$(basename $0) <ip>"; return 1; }
+
+  known_hosts="$HOME/.ssh/known_hosts"
+  grep $1 $known_hosts > /dev/null
+  [ $? -eq 0 ] || { echo "don't know about host $1"; return 1; }
+
+  sed -i '' "/^$1/d" $known_hosts
+  echo "removed $1 from $know_hosts"
+}
+
 ###############################################################################
 # SSH-TO
 ###############################################################################
