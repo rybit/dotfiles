@@ -132,7 +132,7 @@ function forget_host(){
   [ $? -eq 0 ] || { echo "don't know about host $1"; return 1; }
 
   sed -i '' "/^$1/d" $known_hosts
-  echo "removed $1 from $know_hosts"
+  echo "removed $1 from $known_hosts"
 }
 
 ###############################################################################
