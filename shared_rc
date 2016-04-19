@@ -125,49 +125,30 @@ function _sendto() {
 complete -o default -o nospace -F _sendto sendto
 
 function forget_host(){
-  [ $# -eq 1 ] || { echo "$(basename $0) <ip>"; return 1; }
+  [ $# -gt 0 ] || { echo "forget_host <ip> [<ip>]"; return 1; }
 
   known_hosts="$HOME/.ssh/known_hosts"
-  grep $1 $known_hosts > /dev/null
-  [ $? -eq 0 ] || { echo "don't know about host $1"; return 1; }
+  for ip in $@; do
+    echo -n "forgetting $ip...."
+    grep $ip $known_hosts > /dev/null
+    [ $? -eq 0 ] || { echo "don't know about host $ip"; return 1; }
 
-  sed -i '' "/^$1/d" $known_hosts
-  echo "removed $1 from $known_hosts"
+    sed -i '' "/^$ip/d" $known_hosts
+    echo "removed from $known_hosts"
+  done
 }
 
 ###############################################################################
-# SSH-TO
+# SSH-MARK
 ###############################################################################
-function sshto() {
-  usage="
-    usage: sshto <bookmark>\n \
-    special names are: \n \
-    \tadd <place> <hostname | ip>
-  "
-  conf="$HOME/.sshto-bookmarks"
-  [ -e $conf ] || { touch $conf; }
-  [ $# -ne 0 ] || { echo -e $usage; return 1; }
+function ssh-mark() {
+  [ $# -gt 1 ] || { echo "usage: ssh-mark <name> <place>"; return 1; }
 
-  bookmark=$1
-  shift
-  if [ $bookmark == "add" ]; then
-    [ $# -gt 1 ] || { echo "must provide a name to mark"; echo -e $usage; return 1; }
-    bookmark=$1
-    egrep "^$bookmark " $conf > /dev/null
-    [ $? -eq 1 ] || { echo "There is a bookmark for '$bookmark' already"; return 1; }
+  grep $1 /etc/hosts > /dev/null
+  [ $? -eq 1 ] || { echo "The bookmark $1 exists already"; return 1; }
 
-    echo "$@" >> $conf
-    echo "added $@"
-    return 0
-  fi
-
-  # find the bookmark now
-  line=$(egrep "^$bookmark " $conf)
-  [ $? -eq 0 ] || { echo "Failed to find bookmark '$bookmark'"; return 1; }
-
-  # split it
-  where="$(echo $line | cut -d ' ' -f 2-)"
-  ssh $where
+  echo "Adding bookmark for $2 as $1"
+  sudo echo "$2 $1" >> /etc/hosts
 }
 
 ###############################################################################
