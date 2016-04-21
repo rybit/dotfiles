@@ -154,25 +154,42 @@ function ssh-mark() {
 ###############################################################################
 # GOTO
 ###############################################################################
-function gt() {
-  usage="
-    usage: gt <bookmark>\n \
-    special names are: \n\
-    \tmark <name> : store the pwd under the name\n\
-    \tlist        : list the bookmarks
-  "
-  conf="$HOME/.goto-bookmarks"
+function bookmark() {
+  conf="$HOME/.bookmarks"
+  usage="usage: bookmark <name>"
   [ -e $conf ] || { touch $conf; }
-  [ $# -ne 0 ] || { echo -e $usage; return 1; }
 
-  if [ "$1" == "mark" ]; then
-    [ $# -eq 2 ] || { echo "must provide a name to mark"; echo -e $usage; return 1; }
-    echo $2 `pwd` >> $conf
-    echo "marked '`pwd`' as '$2'"
-    return 0
-  elif [ "$1" == "list" ]; then
-    cat $conf
-    return 0
+  [ $# -eq 1 ] || { echo $usage; bookmark-list; return 1; }
+  grep $1 $conf > /dev/null
+  [ $? -eq 1 ] || { echo "bookmark '$1' already exists"; return 1; }
+
+  echo $1 `pwd` >> $conf
+  echo "marked '`pwd`' as '$1'"
+}
+
+function bookmark-list() {
+  conf="$HOME/.bookmarks"
+  [ -e $conf ] || { touch $conf; }
+
+  cat $conf
+}
+
+function bookmark-go() {
+  conf="$HOME/.bookmarks"
+  [ -e $conf ] || { touch $conf; }
+  if [ $# -eq 0 ]; then
+    cd $HOME
+    return
+  fi
+
+  if [ -d "$@" ]; then
+    cd "$@"
+    return
+  fi
+
+  if [ "$@" == "-" ]; then
+    cd -
+    return
   fi
 
   SAVED_IFS=$IFS
@@ -191,18 +208,17 @@ function gt() {
     echo "Can't find bookmark '$1'"
     echo "options:"
     cat $conf
-    return 0
+    return 1
   elif [ -e "$final_dest" ]; then
     cd "$final_dest"
   else
     echo "Can't go to '$final_dest' because it doesn't exist"
     return 1
   fi
-
 }
 
-_goto_complete() {
-  conf="$HOME/.goto-bookmarks"
+_bookmark_complete() {
+  conf="$HOME/.bookmarks"
   cur=${COMP_WORDS[COMP_CWORD]}
   if [ "$cur" == "" ]; then
     COMPREPLY=(`cat $conf | cut -d ' ' -f 1`)
@@ -215,7 +231,8 @@ _goto_complete() {
     COMPREPLY=($COMPREPLY)
   fi
 }
-complete -o default -o nospace -F _goto_complete gt
+complete -o default -o nospace -F _bookmark_complete bookmark
+alias cd='bookmark-go'
 
 ###############################################################################
 # BINDINGS
