@@ -159,8 +159,8 @@ function bookmark() {
   usage="usage: bookmark <name>"
   [ -e $conf ] || { touch $conf; }
 
-  [ $# -eq 1 ] || { echo $usage; bookmark-list; return 1; }
-  grep $1 $conf > /dev/null
+  [ $# -eq 1 ] || { echo $usage; bookmark; return 1; }
+  grep "$1 " $conf
   [ $? -eq 1 ] || { echo "bookmark '$1' already exists"; return 1; }
 
   echo $1 `pwd` >> $conf

@@ -123,7 +123,7 @@ alias sublime='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
 alias ls='ls -G'
 
 ###############################################################################
-# PATH
+# NEOVIM
 ###############################################################################
-PATH="/usr/local/heroku/bin:$PATH"
+alias vim='nvim'
 
