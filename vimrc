@@ -31,6 +31,10 @@ Plug 'nsf/gocode'
 Plug 'jelera/vim-javascript-syntax'
 Plug 'pangloss/vim-javascript'
 
+" infrastructure
+Plug 'hashivim/vim-terraform'
+Plug 'pearofducks/ansible-vim'
+
 if has('nvim')
   function! DoRemote(arg)
   	UpdateRemotePlugins
@@ -148,7 +152,7 @@ map k gk
 
 map q: :q                    " Stop that popup from showing up
 nnoremap <leader>w :w<CR>    " Save with <Space>w
-nnoremap <leader>c :q<CR>    " Quit with <Space>q
+nnoremap <leader>dd :q<CR>    " Quit with <Space>q
 nnoremap <leader>wq :wq<CR>  " Save and quit with <Space>wq
 
 " Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
