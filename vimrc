@@ -152,7 +152,7 @@ map k gk
 
 map q: :q                    " Stop that popup from showing up
 nnoremap <leader>w :w<CR>    " Save with <Space>w
-nnoremap <leader>dd :q<CR>    " Quit with <Space>q
+nnoremap <leader>c :q<CR>    " Quit with <Space>q
 nnoremap <leader>wq :wq<CR>  " Save and quit with <Space>wq
 
 " Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
@@ -257,8 +257,8 @@ let g:PyFlakeSigns = 1
 if has('nvim')
   tnoremap <Esc> <C-\><C-n>
 
-  nnoremap <leader>vt :vsp<cr> :terminal<cr>
-  nnoremap <leader>st :sp<cr> :terminal<cr>
+  nnoremap <leader>y :vsp<cr> :terminal<cr>
+  nnoremap <leader>t :sp<cr> :terminal<cr>
 
   autocmd! BufWritePost * Neomake
   nnoremap <leader>l :lopen<cr>
