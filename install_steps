@@ -17,7 +17,7 @@ ln -s ~/.vim/colors/vim-hybrid.vim.git/colors/hybrid.vim ~/.vim/colors/hybrid.vi
 
 # config git
 git config --global core.editor /usr/bin/vim
-git config --global user.name ryan
+git config --global user.name Ryan Neal
 git config --global user.email ry.neal@gmail.com
 
 pip install virtualenv

@@ -22,6 +22,9 @@ brew install docker docker-machine
 # installing macvim
 brew reinstall macvim --HEAD --with-luajit --with-custom-icons --with-override-system-vim
 
+brew install neovim
+
 # netlify things
-brew install dns-masq
+brew install dns-masq elasticsearch kibana
+
 

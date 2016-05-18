@@ -113,11 +113,11 @@ endif
 map <c-t> :NERDTreeToggle<CR>
 
 " Ctrl-P
-nnoremap gm :CtrlPMixed<cr>
-nnoremap gl :CtrlPLine<cr>
-nnoremap gb :CtrlPBuffer<cr>
-nnoremap go :CtrlP<cr>
-nnoremap gr :CtrlPMRUFiles<cr>
+nnoremap pm :CtrlPMixed<cr>
+nnoremap pl :CtrlPLine<cr>
+nnoremap pb :CtrlPBuffer<cr>
+nnoremap po :CtrlP<cr>
+nnoremap pr :CtrlPMRUFiles<cr>
 
 " This allows buffers to be hidden if you've modified a buffer.
 " This is almost a must if you wish to use buffers in this way.
@@ -133,6 +133,9 @@ nmap <C-l> :bnext<CR>
 
 " Move to the previous buffer
 nmap <C-h> :bprevious<CR>
+if has('nvim')
+  nmap <BS> :bprevious<CR>
+endif
 
 " Close the current buffer and move to the previous one
 " This replicates the idea of closing a tab
