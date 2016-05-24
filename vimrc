@@ -112,13 +112,6 @@ endif
 " NERDtree
 map <c-t> :NERDTreeToggle<CR>
 
-" Ctrl-P
-nnoremap pm :CtrlPMixed<cr>
-nnoremap pl :CtrlPLine<cr>
-nnoremap pb :CtrlPBuffer<cr>
-nnoremap po :CtrlP<cr>
-nnoremap pr :CtrlPMRUFiles<cr>
-
 " This allows buffers to be hidden if you've modified a buffer.
 " This is almost a must if you wish to use buffers in this way.
 set hidden
@@ -154,7 +147,7 @@ map k gk
 
 
 map q: :q                    " Stop that popup from showing up
-nnoremap <leader>w :w<CR>    " Save with <Space>w
+nnoremap <leader>ww :w<CR>    " Save with <Space>w
 nnoremap <leader>c :q<CR>    " Quit with <Space>q
 nnoremap <leader>wq :wq<CR>  " Save and quit with <Space>wq
 
@@ -206,7 +199,7 @@ autocmd BufRead,BufNewFile *.txt setlocal wrap linebreak nolist tw=120
 autocmd FileType sh setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4 list listchars=tab:>·,trail:·
 
-au FileType json nmap <leader>p :%!python -m json.tool
+au FileType json nmap <leader>j :%!python -m json.tool
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGS
