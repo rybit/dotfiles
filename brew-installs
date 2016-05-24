@@ -9,7 +9,7 @@ brew install dos2unix htop-osx iftop jq ngrep nmap openssl readline rlwrap tree 
 brew install git bash-completion ansible bzr gpg
 
 # dev languages
-brew install go node python
+brew install go node python python3
 brew install rbenv ruby-install
 
 # DB crap
@@ -28,3 +28,5 @@ brew install neovim
 brew install dns-masq elasticsearch kibana
 
 
+# vim things
+brew install neovim

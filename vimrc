@@ -5,7 +5,7 @@
 
 " Load vim-plug
 if empty(glob("~/.vim/autoload/plug.vim"))
-  execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+  execute '!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.github.com/junegunn/vim-plug/master/plug.vim'
 endif
 
 call plug#begin('~/.vim/plugged')
@@ -26,6 +26,7 @@ Plug 'andviro/flake8-vim'
 " go
 Plug 'fatih/vim-go'
 Plug 'nsf/gocode'
+Plug 'garyburd/go-explorer'
 
 " js
 Plug 'jelera/vim-javascript-syntax'
@@ -92,7 +93,6 @@ set showmatch
 set hidden
 set number
 set ruler
-set wrap
 set wildmenu                    " turn on wild menu :e <Tab>
 set wildmode=list:longest       " set wildmenu to list choice
 set wildignore=*.o,*~,*.pyc,*.egg-info
