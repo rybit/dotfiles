@@ -112,6 +112,13 @@ endif
 " NERDtree
 map <c-t> :NERDTreeToggle<CR>
 
+" Ctrl-P
+nnoremap cm :CtrlPMixed<cr>
+nnoremap cl :CtrlPLine<cr>
+nnoremap cb :CtrlPBuffer<cr>
+nnoremap co :CtrlP<cr>
+nnoremap cr :CtrlPMRUFiles<cr>
+
 " This allows buffers to be hidden if you've modified a buffer.
 " This is almost a must if you wish to use buffers in this way.
 set hidden
@@ -199,7 +206,7 @@ autocmd BufRead,BufNewFile *.txt setlocal wrap linebreak nolist tw=120
 autocmd FileType sh setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4 list listchars=tab:>·,trail:·
 
-au FileType json nmap <leader>j :%!python -m json.tool
+au FileType json nmap <leader>jp :%!python -m json.tool
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGS
@@ -236,8 +243,6 @@ let g:go_fmt_command = "goimports"
 au FileType go nmap <leader>gs <Plug>(go-def-split)
 au FileType go nmap <leader>gv <Plug>(go-def-vertical)
 au FileType go nmap <leader>gd <Plug>(go-doc)
-au FileType go nmap <leader>gv <Plug>(go-doc-vertical)
-au FileType go nmap <leader>gb <Plug>(go-doc-browser)
 
 
 " FLAKE8
