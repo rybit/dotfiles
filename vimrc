@@ -101,6 +101,10 @@ set lazyredraw
 set noerrorbells
 set shell=bash
 
+set splitright
+set splitbelow
+
+
 if maparg('<C-L>', 'n')==# ''
   nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 endif
@@ -123,10 +127,6 @@ nnoremap cr :CtrlPMRUFiles<cr>
 " This is almost a must if you wish to use buffers in this way.
 set hidden
 
-
-" To open a new empty buffer
-" This replaces :tabnew which I used to bind to this mapping
-nmap <C-t> :enew<cr>
 
 " Move to the next buffer
 nmap <C-l> :bnext<CR>
@@ -207,6 +207,7 @@ autocmd FileType sh setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4 list listchars=tab:>·,trail:·
 
 au FileType json nmap <leader>jp :%!python -m json.tool
+au BufReadPost Jenkinsfile set syntax=groovy
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGS

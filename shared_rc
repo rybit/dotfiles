@@ -384,6 +384,13 @@ alias gcom='git commit -S -s'
 alias gitignore='vim .gitignore'
 alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+git config --global alias.last 'log -1 HEAD'
+git config --global alias.nb 'checkout -b'
+
 function git-rm-remote-tag(){
   [ $# -eq 1 ] || { echo "provide tag name"; return 1; }
   git push origin :refs/tags/$1
@@ -399,6 +406,13 @@ function git-init-ignore(){
 
 function parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+function browse() {
+  which hub > /dev/null
+  [ $? -eq 0 ] || { echo "hub not installed: github.com/github/hub"; return 1; }
+
+  hub browse
 }
 
 ###############################################################################
