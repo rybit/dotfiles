@@ -390,6 +390,7 @@ git config --global alias.ci commit
 git config --global alias.st status
 git config --global alias.last 'log -1 HEAD'
 git config --global alias.nb 'checkout -b'
+git config --global alias.unstage 'reset HEAD --'
 
 function git-rm-remote-tag(){
   [ $# -eq 1 ] || { echo "provide tag name"; return 1; }
@@ -435,7 +436,7 @@ function docker-connect() {
 shopt -s cmdhist
 HISTCONTROL=ignoreboth
 HISTSIZE=10000
-HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:fs:sharedrc:vimrc:gst"
+HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:fs:sharedrc:vimrc:gst:glog"
 
 ###############################################################################
 # PATH

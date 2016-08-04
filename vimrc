@@ -16,6 +16,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'bling/vim-bufferline'
 Plug 'bling/vim-airline'
 Plug 'edkolev/promptline.vim'
+Plug 'tpope/vim-fugitive'
 
 Plug 'chrisbra/csv.vim'
 
@@ -123,10 +124,6 @@ nnoremap cb :CtrlPBuffer<cr>
 nnoremap co :CtrlP<cr>
 nnoremap cr :CtrlPMRUFiles<cr>
 
-" This allows buffers to be hidden if you've modified a buffer.
-" This is almost a must if you wish to use buffers in this way.
-set hidden
-
 
 " Move to the next buffer
 nmap <C-l> :bnext<CR>
@@ -141,6 +138,8 @@ endif
 " This replicates the idea of closing a tab
 nmap <leader>d :bp <BAR> bd #<CR>
 
+nmap <leader>b :Gblame<CR>
+
 " Show all open buffers and their status
 nmap <leader>bl :ls<CR>
 
@@ -152,17 +151,10 @@ nmap <leader>v :vsplit<CR>
 map j gj
 map k gk
 
-
 map q: :q                    " Stop that popup from showing up
 nnoremap <leader>ww :w<CR>    " Save with <Space>w
 nnoremap <leader>c :q<CR>    " Quit with <Space>q
 nnoremap <leader>wq :wq<CR>  " Save and quit with <Space>wq
-
-" Move a line of text using ALT+[jk] or Comamnd+[jk] on mac
-nmap <M-j> mz:m+<cr>`z
-nmap <M-k> mz:m-2<cr>`z
-vmap <M-j> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <M-k> :m'<-2<cr>`>my`<mzgv`yo`z
 
 if has("mac") || has("macunix")
   nmap <D-j> <M-j>
