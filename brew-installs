@@ -6,7 +6,7 @@ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/
 
 # really want
 brew install dos2unix htop-osx iftop jq ngrep nmap openssl readline rlwrap tree watch wget
-brew install git bash-completion ansible bzr gpg
+brew install git bash-completion ansible bzr gpg ctags
 
 # dev languages
 brew install go node python python3

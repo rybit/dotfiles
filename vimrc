@@ -28,6 +28,7 @@ Plug 'andviro/flake8-vim'
 Plug 'fatih/vim-go'
 Plug 'nsf/gocode'
 Plug 'garyburd/go-explorer'
+Plug 'majutsushi/tagbar'
 
 " js
 Plug 'jelera/vim-javascript-syntax'
@@ -136,7 +137,7 @@ endif
 
 " Close the current buffer and move to the previous one
 " This replicates the idea of closing a tab
-nmap <leader>d :bp <BAR> bd #<CR>
+nmap <leader>x :bp <BAR> bd #<CR>
 
 nmap <leader>b :Gblame<CR>
 
@@ -235,7 +236,10 @@ let g:go_fmt_command = "goimports"
 
 au FileType go nmap <leader>gs <Plug>(go-def-split)
 au FileType go nmap <leader>gv <Plug>(go-def-vertical)
-au FileType go nmap <leader>gd <Plug>(go-doc)
+au FileType go nmap <leader>gf <Plug>(go-implements)
+au FileType go nmap <leader>gi <Plug>(go-info)
+au FileType go nmap <leader>gr <Plug>(go-rename)
+au FileType go nmap <leader>gt :TagbarToggle<CR>
 
 
 " FLAKE8
