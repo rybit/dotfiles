@@ -148,6 +148,10 @@ nmap <leader>bl :ls<CR>
 nmap <leader>s :split<CR>
 nmap <leader>v :vsplit<CR>
 
+" mouse settings
+nmap <leader>me :set mouse=a<cr>
+nmap <leader>md :set mouse=<cr>
+
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
 map k gk
@@ -201,6 +205,7 @@ autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4 
 
 au FileType json nmap <leader>jp :%!python -m json.tool
 au BufReadPost Jenkinsfile set syntax=groovy
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGS
