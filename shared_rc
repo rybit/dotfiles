@@ -138,6 +138,21 @@ function forget_host(){
   done
 }
 
+function learn_host(){
+  [ $# -gt 0 ] || { echo "learn_host <hostname> [<hostname || ip>]"; return 1; }
+
+  known_hosts="$HOME/.ssh/known_hosts"
+  for ip in $@; do
+    echo -n "learning $ip...."
+    grep "^$ip " $known_hosts > /dev/null
+    if [ $? -eq 0 ]; then
+      echo "already know about $ip - skipping"
+    else
+      ssh-keyscan $ip >> $known_hosts
+    fi
+  done
+}
+
 ###############################################################################
 # SSH-MARK
 ###############################################################################
