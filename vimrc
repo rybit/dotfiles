@@ -125,7 +125,6 @@ nnoremap cb :CtrlPBuffer<cr>
 nnoremap co :CtrlP<cr>
 nnoremap cr :CtrlPMRUFiles<cr>
 
-
 " Move to the next buffer
 nmap <C-l> :bnext<CR>
 
@@ -201,7 +200,8 @@ autocmd BufWrite * :call DeleteTrailingWS()
 " Special formatting rules for certain types
 autocmd BufRead,BufNewFile *.txt setlocal wrap linebreak nolist tw=120
 autocmd FileType sh setlocal tabstop=2 softtabstop=2 shiftwidth=2 expandtab
-autocmd FileType python setlocal tabstop=4 expandtab shiftwidth=4 softtabstop=4 list listchars=tab:>·,trail:·
+autocmd FileType python setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2 list listchars=tab:>·,trail:·
+autocmd BufRead,BufNewFile *.py set expandtab
 
 au FileType json nmap <leader>jp :%!python -m json.tool
 au BufReadPost Jenkinsfile set syntax=groovy

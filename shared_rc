@@ -19,6 +19,16 @@ alias sharedrc='vim ~/.shared_rc && source ~/.shared_rc'
 alias only_files='cut -d ":" -f 1 | sort | uniq -c | sort -n -r'
 alias ping8s='ping 8.8.8.8'
 
+if [ $(which figlet) ]; then
+  alias fml='figlet -c FUCK  && figlet -c MY  && figlet -c LIFE'
+else
+  alias fml='---- figlet not install: fml ----'
+fi
+
+which hub > /dev/null
+if [ $? -eq 0 ]; then
+  alias pr='hub pull-request'
+fi
 function f(){
   find . -iname "*$@*"
 }
@@ -127,14 +137,8 @@ complete -o default -o nospace -F _sendto sendto
 function forget_host(){
   [ $# -gt 0 ] || { echo "forget_host <ip> [<ip>]"; return 1; }
 
-  known_hosts="$HOME/.ssh/known_hosts"
   for ip in $@; do
-    echo -n "forgetting $ip...."
-    grep $ip $known_hosts > /dev/null
-    [ $? -eq 0 ] || { echo "don't know about host $ip"; return 1; }
-
-    sed -i '' "/^$ip/d" $known_hosts
-    echo "removed from $known_hosts"
+    ssh-keygen -R $ip
   done
 }
 
@@ -396,6 +400,7 @@ alias gc-='git checkout -'
 alias gco='git checkout'
 alias gcm='git checkout master'
 alias gcom='git commit -S -s'
+alias gpr='git pull --rebase'
 alias gitignore='vim .gitignore'
 alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
