@@ -20,6 +20,9 @@ Plug 'tpope/vim-fugitive'
 
 Plug 'chrisbra/csv.vim'
 
+" elm
+Plug 'elmcast/elm-vim'
+
 " python
 Plug 'davidhalter/jedi-vim'
 Plug 'andviro/flake8-vim'
@@ -46,9 +49,9 @@ if has('nvim')
 	Plug 'zchee/deoplete-go', { 'do': 'make'}
   Plug 'benekastah/neomake'
 else
-  Plug 'Shougo/neocomplete'
-  Plug 'Shougo/neosnippet'
-  Plug 'Shougo/neosnippet-snippets'
+"  Plug 'Shougo/neocomplete'
+"  Plug 'Shougo/neosnippet'
+"  Plug 'Shougo/neosnippet-snippets'
 endif
 
 " markdown
@@ -134,6 +137,14 @@ if has('nvim')
   nmap <BS> :bprevious<CR>
 endif
 
+" move lines up and down with ctrl-j/k
+nnoremap <C-j> :m .+1<CR>==
+nnoremap <C-k> :m .-2<CR>==
+inoremap <C-j> <Esc>:m .+1<CR>==gi
+inoremap <C-k> <Esc>:m .-2<CR>==gi
+vnoremap <C-j> :m '>+1<CR>gv=gv
+vnoremap <C-k> :m '<-2<CR>gv=gv
+
 " Close the current buffer and move to the previous one
 " This replicates the idea of closing a tab
 nmap <leader>x :bp <BAR> bd #<CR>
@@ -168,7 +179,7 @@ if has("mac") || has("macunix")
 endif
 
 " Remove the Windows ^M - when the encodings gets messed up
-noremap <leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
+"noremap <leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Quote a word consisting of letters from iskeyword.
 vmap <silent> <leader>es :call Surround(''', ''')<CR>
@@ -210,6 +221,10 @@ au BufReadPost Jenkinsfile set syntax=groovy
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " PLUGIN CONFIGS
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" elm-vim
+let g:elm_format_autosave = 1
+
 
 " JEDI-VIM
 let g:jedi#documentation_command = "K"

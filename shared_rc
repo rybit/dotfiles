@@ -19,6 +19,10 @@ alias sharedrc='vim ~/.shared_rc && source ~/.shared_rc'
 alias only_files='cut -d ":" -f 1 | sort | uniq -c | sort -n -r'
 alias ping8s='ping 8.8.8.8'
 
+if [ $(which pg_ctl) ]; then
+  alias pg_ctl='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log'
+fi
+
 if [ $(which figlet) ]; then
   alias fml='figlet -c FUCK  && figlet -c MY  && figlet -c LIFE'
 else
@@ -157,6 +161,11 @@ function learn_host(){
   done
 }
 
+function delete_ssh_key() {
+  [ $# -eq 1 ] || { echo "delete_ssh_key <line number>"; return 1; }
+  sed -i .bk "$1d" $HOME/.ssh/known_hosts
+}
+
 ###############################################################################
 # SSH-MARK
 ###############################################################################
@@ -251,7 +260,7 @@ _bookmark_complete() {
   fi
 }
 complete -o default -o nospace -F _bookmark_complete bookmark
-alias cd='bookmark-go'
+alias gt='bookmark-go'
 
 ###############################################################################
 # BINDINGS
@@ -363,6 +372,8 @@ function venv() {
         which_python='/usr/bin/python3.3';;
       'py34')
         which_python='/usr/bin/python3.4';;
+      'py35')
+        which_python='/usr/local/bin/python3.5';;
       *)
         echo "no python $2"
         return 1
@@ -382,6 +393,12 @@ function venv() {
   fi
 }
 
+function concat() {
+  local IFS="$1"
+  shift
+  echo "$*"
+}
+
 ###############################################################################
 # GO
 ###############################################################################
@@ -391,7 +408,6 @@ alias gobuild='go build $(go list ./... | grep -v vendor)'
 ###############################################################################
 # GIT
 ###############################################################################
-alias gg='git grep'
 alias gitamend='git commit --amend'
 alias grv='git remote -v'
 alias gst='git status'
@@ -401,8 +417,9 @@ alias gco='git checkout'
 alias gcm='git checkout master'
 alias gcom='git commit -S -s'
 alias gpr='git pull --rebase'
+alias gpp='git pull --prune'
 alias gitignore='vim .gitignore'
-alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
+alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit | less -R'
 
 git config --global alias.co checkout
 git config --global alias.br branch
