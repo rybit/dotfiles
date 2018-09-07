@@ -19,6 +19,26 @@ alias sharedrc='vim ~/.shared_rc && source ~/.shared_rc'
 alias only_files='cut -d ":" -f 1 | sort | uniq -c | sort -n -r'
 alias ping8s='ping 8.8.8.8'
 
+if [ $(which exa) ]; then
+  alias ls='exa'
+fi
+
+if [ $(which bat) ]; then
+  alias cat='bat'
+fi
+
+if [ $(which prettyping) ]; then
+  alias ping='prettyping'
+fi
+
+if [ $(which terraform) ]; then
+  alias tf='terraform'
+fi
+
+if [ $(which diff-so-fancy) ]; then
+  alias diff='diff-so-fancy'
+fi
+
 if [ $(which pg_ctl) ]; then
   alias pg_ctl='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log'
 fi
@@ -412,6 +432,7 @@ alias gitamend='git commit --amend'
 alias grv='git remote -v'
 alias gst='git status'
 alias gba='git branch -a'
+alias gbc='git branch -d $(git branch -a | grep -v "*" | grep -v remotes)'
 alias gc-='git checkout -'
 alias gco='git checkout'
 alias gcm='git checkout master'
@@ -419,7 +440,7 @@ alias gcom='git commit -S -s'
 alias gpr='git pull --rebase'
 alias gpp='git pull --prune'
 alias gitignore='vim .gitignore'
-alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit | less -R'
+alias glog='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset" --abbrev-commit'
 
 git config --global alias.co checkout
 git config --global alias.br branch
@@ -466,6 +487,11 @@ function docker-connect() {
 
   eval $(docker-machine env $daemon_name)
 }
+
+###############################################################################
+# KUBERNETES
+###############################################################################
+alias k8='kubectl'
 
 ###############################################################################
 # HISTORY
