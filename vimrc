@@ -11,6 +11,7 @@ endif
 call plug#begin('~/.vim/plugged')
 
 Plug 'scrooloose/nerdtree'
+"Plug 'Valloric/YouCompleteMe'
 Plug 'kien/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'bling/vim-bufferline'
@@ -19,17 +20,18 @@ Plug 'edkolev/promptline.vim'
 Plug 'tpope/vim-fugitive'
 
 Plug 'chrisbra/csv.vim'
+Plug 'mileszs/ack.vim'
 
 " elm
 Plug 'elmcast/elm-vim'
 
 " python
-Plug 'davidhalter/jedi-vim'
-Plug 'andviro/flake8-vim'
+"Plug 'davidhalter/jedi-vim'
+"Plug 'andviro/flake8-vim'
 
 " go
 Plug 'fatih/vim-go'
-Plug 'nsf/gocode'
+Plug 'nsf/gocode', { 'rtp': 'vim', 'do': '~/.vim/plugged/gocode/vim/symlink.sh' }
 Plug 'garyburd/go-explorer'
 Plug 'majutsushi/tagbar'
 
@@ -260,6 +262,9 @@ au FileType go nmap <leader>gf <Plug>(go-implements)
 au FileType go nmap <leader>gi <Plug>(go-info)
 au FileType go nmap <leader>gr <Plug>(go-rename)
 au FileType go nmap <leader>gt :TagbarToggle<CR>
+au FileType go nmap <leader>gh <C-x><C-o>
+
+filetype plugin on
 
 
 " FLAKE8
@@ -268,6 +273,12 @@ let g:PyFlakeCheckers = 'pep8'
 
 " let g:PyFlakeCheckers = 'pep8,mccabe,frosted'
 let g:PyFlakeSigns = 1
+
+
+" for searching
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NEOVIM

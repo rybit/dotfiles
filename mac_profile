@@ -6,6 +6,7 @@
 
 [ -e ~/google-cloud-sdk/completion.bash.inc ] && { source ~/google-cloud-sdk/completion.bash.inc; }
 [ -e ~/google-cloud-sdk/path.bash.inc ] && { source ~/google-cloud-sdk/path.bash.inc; }
+[ -e ~/.kube/completion.bash.inc ] && { source ~/.kube/completion.bash.inc; }
 
 function size_dirs() {
   if [ $# -eq 0 ]; then
@@ -93,7 +94,7 @@ GIT_PS1_SHOWDIRTYSTATE=true
 
 #export PS1='\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\[\e[1;36m\]$(__git_ps1 "(%s)")]\n\[\e[0m\]$ '
 #export PS1='\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\[\e[1;36m\]$(color_git_ps "(%s)")]\n\[\e[0m\]$ '
-export PS1="\[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\$(parse_git_branch)\[\e[1;36m\]]\n\[\e[0m\]$ "
+export PS1="\D{%F %T} \[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\$(parse_git_branch)\[\e[1;36m\]]\n\[\e[0m\]$ "
 
 ## see: https://langui.sh/2014/03/10/wunused-command-line-argument-hard-error-in-future-is-a-harsh-mistress/
 export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
@@ -115,7 +116,6 @@ function pshell() {
 
 alias ss='if [ -e manage.py ]; then python manage.py runserver; else echo No manage.py; fi'
 alias dshell='if [ -e manage.py ]; then python manage.py shell; else echo No manage.py; fi'
-alias python='python3'
 
 ###############################################################################
 # ALIASES
@@ -125,6 +125,10 @@ alias disable_searchlight='sudo launchctl unload -w /System/Library/LaunchDaemon
 alias enable_searchlight='sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist'
 alias sublime='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
 alias ls='ls -G'
+alias python='python3'
+
+alias mysql_start='brew services start mysql'
+alias mysql_stop='brew services stop mysql'
 
 ###############################################################################
 # NEOVIM
@@ -139,3 +143,6 @@ test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shel
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl/lib/
+
+export PATH="$PATH:/usr/local/opt/mysql@5.7/bin"
