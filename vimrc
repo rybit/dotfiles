@@ -18,6 +18,7 @@ Plug 'bling/vim-bufferline'
 Plug 'bling/vim-airline'
 Plug 'edkolev/promptline.vim'
 Plug 'tpope/vim-fugitive'
+Plug 'flazz/vim-colorschemes'
 
 Plug 'chrisbra/csv.vim'
 Plug 'mileszs/ack.vim'

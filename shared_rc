@@ -8,15 +8,12 @@ alias ll='ls -alrh'
 alias grep='grep --color=auto'
 alias watch='watch -d -n 1'
 alias ssh='ssh -A'
-alias pretty_json='python -m json.tool'
 alias less='less -R'
 
+alias vim='vim -p'
 alias path='echo $PATH | tr ":" "\n"'
 alias stamp='date +%y%m%d_%H%M'
 
-alias source_profile='source ~/.profile'
-alias sharedrc='vim ~/.shared_rc && source ~/.shared_rc'
-alias only_files='cut -d ":" -f 1 | sort | uniq -c | sort -n -r'
 alias ping8s='ping 8.8.8.8'
 
 if [ $(which exa) ]; then
@@ -45,31 +42,14 @@ else
   alias fml='---- figlet not install: fml ----'
 fi
 
-which hub > /dev/null
-if [ $? -eq 0 ]; then
+if [ $(which hub > /dev/null) ]; then
   alias pr='hub pull-request'
 fi
+
 function f(){
   find . -iname "*$@*"
 }
 
-function unstash() {
-  [ -e 'stash' ] || { echo "no stash"; return 1; }
-  mv -v stash/* .
-  rmdir stash
-}
-
-function stash() {
-  [ ! -e 'stash' ] || { echo "already have a stash! can't do it"; return 1; }
-  mkdir stash/
-  mv -v "$@" stash/
-}
-
-function mkmv() {
-  [ $# -eq 1 ] || { echo "provide a dirname (only one)"; return; }
-  mkdir -p "$1"
-  cd "$1"
-}
 
 function mark() {
   for i in `seq 5`; do
@@ -86,73 +66,6 @@ function abs() {
     (cd `dirname $f`; echo `pwd`/`basename $f`)
   done
 }
-
-function sendto() {
-  usage="\
-    usage: sendto <bookmark name> <file..>\n \
-    special names are:\n \
-    \tmark <name> <place> - store the place to under the name\n \
-    \tlist - list the stored names\n \
-    examples:\n \
-    \t$ sendto mark dev-home dev:~/\n \
-    \t$ sendto mark dev-playground dev:~/pg/\n \
-    \t$ sendto dev-home thisfile thatfile \# equivalent of scp thisfile thatfile dev:~/\n \
-  "
-  conf="$HOME/.sendto-bookmarks"
-  [ -e $conf ] || { touch $conf; }
-
-  if [ "$1" == "mark" ]; then
-    [ $# -eq 3 ] || { echo "must provide name and place to mark"; echo -e $usage; return 1; }
-    tag=`echo $2 | tr [:space:] "_"`
-    echo "$2 $3" >> $conf
-  elif [ "$1" == "list" ]; then
-    cat $conf
-    return 0
-  elif [ $# -lt 2 ]; then
-    echo -e $usage
-    return 1
-  fi
-
-  # now we know we're sending something
-  SAVED_IFS=$IFS
-  IFS=$(echo -en "\n\b")
-  mark=$1
-  shift
-  final_dest=""
-  for line in `cat $conf`; do
-    tag=`echo $line | cut -d ' ' -f 1`
-    if [ "$mark" == "$tag" ]; then
-      final_dest=`echo $line | cut -d ' ' -f 2`
-      break
-    fi
-  done
-  IFS=$SAVED_IFS
-  if [ "" == "$final_dest" ]; then
-    echo "Can't find a book mark for '$mark'"
-    echo "options:"
-    cat $conf
-    return 1
-  fi
-
-  # found it and we're all good
-  scp $@ $dest
-}
-
-function _sendto() {
-  conf="$HOME/.sendto-bookmarks"
-  cur=${COMP_WORDS[COMP_CWORD]}
-  if [ "$cur" == "" ]; then
-    COMPREPLY=(`cat $conf | cut -d ' ' -f 1`)
-  else
-    for opt in `cat $conf | cut -d ' ' -f 1`; do
-      if [[ $opt =~ $cur ]]; then
-        COMPREPLY="${COMPREPLY} $opt"
-      fi
-    done
-    COMPREPLY=($COMPREPLY)
-  fi
-}
-complete -o default -o nospace -F _sendto sendto
 
 function forget_host(){
   [ $# -gt 0 ] || { echo "forget_host <ip> [<ip>]"; return 1; }
@@ -182,101 +95,17 @@ function delete_ssh_key() {
   sed -i .bk "$1d" $HOME/.ssh/known_hosts
 }
 
-###############################################################################
-# SSH-MARK
-###############################################################################
-function ssh-mark() {
-  [ $# -gt 1 ] || { echo "usage: ssh-mark <name> <place>"; return 1; }
-
-  grep $1 /etc/hosts > /dev/null
-  [ $? -eq 1 ] || { echo "The bookmark $1 exists already"; return 1; }
-
-  echo "Adding bookmark for $2 as $1"
-  sudo echo "$2 $1" >> /etc/hosts
-}
-
-###############################################################################
-# GOTO
-###############################################################################
-function bookmark() {
-  conf="$HOME/.bookmarks"
-  usage="usage: bookmark <name>"
-  [ -e $conf ] || { touch $conf; }
-
-  [ $# -eq 1 ] || { echo $usage; bookmark; return 1; }
-  grep -E "^$1 " $conf
-  [ $? -eq 1 ] || { echo "bookmark '$1' already exists"; return 1; }
-
-  echo $1 `pwd` >> $conf
-  echo "marked '`pwd`' as '$1'"
-}
-
-function bookmark-list() {
-  conf="$HOME/.bookmarks"
-  [ -e $conf ] || { touch $conf; }
-
-  cat $conf
-}
-
-function bookmark-go() {
-  conf="$HOME/.bookmarks"
-  [ -e $conf ] || { touch $conf; }
-  if [ $# -eq 0 ]; then
-    cd $HOME
-    return
+function scratch() {
+  mkdir -p "$HOME/scratchfiles"
+  name=$(date +%y%m%d_%H%M)
+  if [ $# -eq 1 ]; then
+    name=$(echo $1 | sed 's/ /_/g')
   fi
-
-  if [ -d "$@" ]; then
-    cd "$@"
-    return
-  fi
-
-  if [ "$@" == "-" ]; then
-    cd -
-    return
-  fi
-
-  SAVED_IFS=$IFS
-  IFS=$(echo -en "\n\b")
-  final_dest=""
-  for line in `cat $conf`; do
-    tag=`echo $line | cut -d ' ' -f 1`
-    if [ "$1" == "$tag" ]; then
-      final_dest="`echo $line | cut -d ' ' -f 2-`"
-      break;
-    fi
-  done
-  IFS=$SAVED_IFS
-
-  if [ "" == "$final_dest" ]; then
-    echo "Can't find bookmark '$1'"
-    echo "options:"
-    less $conf
-    return 1
-  elif [ -e "$final_dest" ]; then
-    cd "$final_dest"
-  else
-    echo "Can't go to '$final_dest' because it doesn't exist"
-    return 1
+  vim "$HOME/scratchfiles/$name"
+  if [ $? -eq 0 ]; then
+    echo "scratch file at: $HOME/scratchfiles/$name"
   fi
 }
-
-_bookmark_complete() {
-  conf="$HOME/.bookmarks"
-  cur=${COMP_WORDS[COMP_CWORD]}
-  if [ "$cur" == "" ]; then
-    COMPREPLY=(`cat $conf | cut -d ' ' -f 1`)
-  else
-    for opt in `cat $conf | cut -d ' ' -f 1`; do
-      if [[ $opt =~ $cur ]]; then
-        COMPREPLY="$COMPREPLY $opt"
-      fi
-    done
-    COMPREPLY=($COMPREPLY)
-  fi
-}
-complete -o default -o nospace -F _bookmark_complete bookmark
-alias gt='bookmark-go'
 
 ###############################################################################
 # BINDINGS
@@ -320,94 +149,56 @@ function ta() {
 
 
 ###############################################################################
-# VIM
-###############################################################################
-function vimrc() {
-  vim ~/.vimrc
-}
-
-function vimfind() {
-  [ $# -eq 1 ] || { echo "What do you want me to find?"; return 1; }
-  w=$(find . -iname "*$@*")
-  if [ "$w" == "" ]; then
-    echo "Failed to find $1"
-    return 1
-  fi
-
-  vim "$w"
-}
-
-function vimwhich() {
-  [ $# -eq 1 ] || { echo "What do you want me to find?"; return 1; }
-  w="$(which $1)"
-  if [ "$w" == "" ]; then
-    echo "Failed to find $1"
-    return 1
-  fi
-
-  vim "$w"
-}
-
-function vim_script(){
-  [ $# -eq 1 ] || { echo "Provide the name of the script to start"; return 1; }
-  [ ! -e "$1" ] || { echo "can't start a script that exists already"; return 1; }
-
-  echo "#!/bin/bash" > "$1"
-  chmod +x "$1"
-  vim "$1"
-}
-
-###############################################################################
 # PYTHON
 ###############################################################################
 if [ -e '~/.pythonrc.py' ]; then
   export PYTHONSTARTUP=~/.pythonrc.py
 fi
-
-function activate() {
-  dir='.'
-  if [ $# -eq 1 ]; then
-    dir="$1"
-  fi
-  activate_script=`find "$dir" -name "activate"`
-  [ -e "$activate_script" ] || { echo "Failed to find a virtual env under '$dir'"; return 1; }
-  source "$activate_script"
-}
-
-function venv() {
-  venv_name="$1"
-  if [ "$1" == "--" ] || [ $# -eq 0 ]; then
-    venv_name="venv-`basename $(pwd)`"
-  fi
-
-  if [ $# -eq 2 ]; then
-    case "$2" in
-      'py27')
-        which_python='/usr/bin/python2.7';;
-      'py33')
-        which_python='/usr/bin/python3.3';;
-      'py34')
-        which_python='/usr/bin/python3.4';;
-      'py35')
-        which_python='/usr/local/bin/python3.5';;
-      *)
-        echo "no python $2"
-        return 1
-        ;;
-    esac
-    virtualenv -p $which_python $venv_name
-  else
-    virtualenv $venv_name
-  fi
-  echo "built virtual env: $venv_name"
-  source $venv_name/bin/activate
-  if [ -e 'requirements.txt' ]; then
-    echo "found requirements file - installing it into $venv_name"
-    pip install -r requirements.txt
-  elif [ -e 'setup.py' ]; then
-    pip install -e .
-  fi
-}
+#
+#function activate() {
+#  dir='.'
+#  if [ $# -eq 1 ]; then
+#    dir="$1"
+#  fi
+#  activate_script=`find "$dir" -name "activate"`
+#  [ -e "$activate_script" ] || { echo "Failed to find a virtual env under '$dir'"; return 1; }
+#  source "$activate_script"
+#}
+#
+#function venv() {
+#  venv_name="$1"
+#  if [ "$1" == "--" ] || [ $# -eq 0 ]; then
+#    venv_name="venv-`basename $(pwd)`"
+#  fi
+#
+#  if [ $# -eq 2 ]; then
+#    case "$2" in
+#      'py27')
+#        which_python='/usr/bin/python2.7';;
+#      'py33')
+#        which_python='/usr/bin/python3.3';;
+#      'py34')
+#        which_python='/usr/bin/python3.4';;
+#      'py35')
+#        which_python='/usr/local/bin/python3.5';;
+#      *)
+#        echo "no python $2"
+#        return 1
+#        ;;
+#    esac
+#    virtualenv -p $which_python $venv_name
+#  else
+#    virtualenv $venv_name
+#  fi
+#  echo "built virtual env: $venv_name"
+#  source $venv_name/bin/activate
+#  if [ -e 'requirements.txt' ]; then
+#    echo "found requirements file - installing it into $venv_name"
+#    pip install -r requirements.txt
+#  elif [ -e 'setup.py' ]; then
+#    pip install -e .
+#  fi
+#}
 
 function concat() {
   local IFS="$1"
@@ -418,11 +209,6 @@ function concat() {
 ###############################################################################
 # GO
 ###############################################################################
-if [ $(which richgo) ]; then
-  alias gotest='richgo test ./...'
-else
-  alias gotest='go test ./...'
-fi
 alias gobuild='go build $(go list ./... | grep -v vendor)'
 
 ###############################################################################
@@ -450,29 +236,11 @@ git config --global alias.last 'log -1 HEAD'
 git config --global alias.nb 'checkout -b'
 git config --global alias.unstage 'reset HEAD --'
 
-function git-rm-remote-tag(){
-  [ $# -eq 1 ] || { echo "provide tag name"; return 1; }
-  git push origin :refs/tags/$1
-}
-
-function git-init-ignore(){
-  echo ".DS_Store" >> .gitignore
-  echo "*.bk" >> .gitignore
-  echo "*.pyc" >> .gitignore
-  echo "*.swp" >> .gitignore
-  echo "db/*" >> .gitignore
-}
 
 function parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
-function browse() {
-  which hub > /dev/null
-  [ $? -eq 0 ] || { echo "hub not installed: github.com/github/hub"; return 1; }
-
-  hub browse
-}
 
 ###############################################################################
 # DOCKER
@@ -489,11 +257,6 @@ function docker-connect() {
 }
 
 ###############################################################################
-# KUBERNETES
-###############################################################################
-alias k8='kubectl'
-
-###############################################################################
 # HISTORY
 ###############################################################################
 shopt -s cmdhist
@@ -505,6 +268,4 @@ HISTIGNORE="&:ls:[bf]g:exit:pwd:clear:fs:sharedrc:vimrc:gst:glog"
 # PATH
 ###############################################################################
 PATH=$PATH:/usr/local/sbin
-which rbenv > /dev/null
-[ $? -eq 1 ] || { eval "$(rbenv init -)"; }
 

@@ -3,17 +3,8 @@ ln -s `pwd`/mac_profile ~/.profile
 ln -s `pwd`/vimrc ~/.vimrc
 ln -s `pwd`/inputrc ~/.inputrc
 
-mkdir -p ~/.vim/bundle
-mkdir -p ~/.vim/colors
-mkdir -p ~/.vim/backup
 mkdir -p ~/.vim/temp
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-
-git clone https://github.com/nanotech/jellybeans.vim ~/.vim/colors/jellybeans.vim.git
-git clone https://github.com/w0ng/vim-hybrid ~/.vim/colors/hybrid.vim.git
-
-ln -s ~/.vim/colors/jellybeans.vim.git/colors/jellybeans.vim ~/.vim/colors/jellybeans.vim
-ln -s ~/.vim/colors/vim-hybrid.vim.git/colors/hybrid.vim ~/.vim/colors/hybrid.vim
+mkdir -p ~/.vim/backup
 
 # config git
 git config --global core.editor /usr/bin/vim

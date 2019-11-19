@@ -1,28 +1,18 @@
-[ -e ~/.secret_rc ] && { source ~/.secret_rc; }
-[ -e ~/.shared_rc ] && { source ~/.shared_rc; }
+[ -f ~/.secret_rc ] &&  source ~/.secret_rc
+[ -f ~/.shared_rc ] &&  source ~/.shared_rc
+
 #curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
-[ -e ~/.git-completion.bash ] && { source ~/.git-completion.bash; }
-[ -e `brew --prefix`/etc/bash_completion ] && { source `brew --prefix`/etc/bash_completion; }
+[ -f ~/.git-completion.bash ] &&  source ~/.git-completion.bash
+[ -f `brew --prefix`/etc/bash_completion ] &&  source `brew --prefix`/etc/bash_completion
 
-[ -e ~/google-cloud-sdk/completion.bash.inc ] && { source ~/google-cloud-sdk/completion.bash.inc; }
-[ -e ~/google-cloud-sdk/path.bash.inc ] && { source ~/google-cloud-sdk/path.bash.inc; }
-[ -e ~/.kube/completion.bash.inc ] && { source ~/.kube/completion.bash.inc; }
+[ -f ~/google-cloud-sdk/completion.bash.inc ] &&  source ~/google-cloud-sdk/completion.bash.inc
+[ -f ~/google-cloud-sdk/path.bash.inc ] &&  source ~/google-cloud-sdk/path.bash.inc
+[ -f ~/.kube/completion.bash.inc ] &&  source ~/.kube/completion.bash.inc
+[ -f /usr/local/etc/bash_completion ] &&  source /usr/local/etc/bash_completion
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[ -f ~/.asdf.sh ] && source ~/.asdf.sh
+[ -f ~/.asdf/completions/asdf.bash ] && source ~/.asdf/completions/asdf.bash
 
-function size_dirs() {
-  if [ $# -eq 0 ]; then
-    dir='.'
-  else
-    dir="$@"
-  fi
-  set SAVED_IFS=$IFS
-  IFS=$(echo -en "\n\b")
-  for f in `find "$dir" -depth 1 -type 'd' | sort`; do
-    s=`ls -1 "$f" | wc -l`
-    echo "$s $f"
-  done
-  IFS=$SAVED_IFS
-  unset $SAVED_IFS
-}
 
 function save_ifs(){
   set SAVED_IFS=$IFS
@@ -34,25 +24,6 @@ function restore_ifs(){
   unset $SAVED_IFS
 }
 
-function rename_no_spaces() {
-  for f in  *; do
-    new_name=`echo $f | sed 's/ /_/g'`
-    if [[ ! $new_name = "$f" ]]; then
-      mv -v "$f" $new_name
-    fi
-  done
-}
-
-function rm_edited() {
-  [ -e edited/ ] || { echo "There are no photos that have been edited"; return 1; }
-  mkdir originals;
-  for f in edited/*; do
-    mv -v `basename "$f" | sed 's/-edited//'` originals/;
-  done;
-  mv edited/* .
-  rmdir edited
-}
-
 function desk() {
   local SAVED_IFS=$IFS
   IFS=$(echo -en "\n\b")
@@ -60,30 +31,6 @@ function desk() {
   IFS=$SAVED_IFS
 }
 
-
-# credit: http://www.jayway.com/2014/01/15/how-to-switch-jdk-version-on-mac-os-x-maverick/
-function setjdk() {
- if [ $# -ne 0 ]; then
-  removeFromPath '/System/Library/Frameworks/JavaVM.framework/Home/bin'
-  if [ -n "${JAVA_HOME+x}" ]; then
-   removeFromPath $JAVA_HOME
-  fi
-  export JAVA_HOME=`/usr/libexec/java_home -v $@`
-  export PATH=$JAVA_HOME/bin:$PATH
- fi
-}
-
-function removeFromPath() {
- export PATH=$(echo $PATH | sed -E -e "s;:$1;;" -e "s;$1:?;;")
-}
-
-function color_git_ps () {
-  if [ "`git config core.name`" == "home" ]; then
-    return
-  else
-    __git_ps1 "$@"
-  fi
-}
 
 # <grey>user@host <cyan>[pwd]
 # <reset>$
@@ -99,50 +46,75 @@ export PS1="\D{%F %T} \[\e[0;37m\]\u@\h\[\e[1;36m\] [\w\$(parse_git_branch)\[\e[
 ## see: https://langui.sh/2014/03/10/wunused-command-line-argument-hard-error-in-future-is-a-harsh-mistress/
 export ARCHFLAGS="-Wno-error=unused-command-line-argument-hard-error-in-future"
 
+alias pull-request='hub pull-request'
+
 ###############################################################################
 # DNSMASQ
 ###############################################################################
 alias dnsmasq_start='sudo launchctl start homebrew.mxcl.dnsmasq'
 alias dnsmasq_stop='sudo launchctl stop homebrew.mxcl.dnsmasq'
 
-###############################################################################
-# DJANGO
-###############################################################################
-function pshell() {
-  [ -e 'manage.py' ] || { echo "No manage.py to use"; exit 1; }
-
-  python manage.py shell
-}
-
-alias ss='if [ -e manage.py ]; then python manage.py runserver; else echo No manage.py; fi'
-alias dshell='if [ -e manage.py ]; then python manage.py shell; else echo No manage.py; fi'
-
-###############################################################################
-# ALIASES
-###############################################################################
-alias edit-profile='vim ~/.profile && source ~/.profile'
-alias disable_searchlight='sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist'
-alias enable_searchlight='sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.metadata.mds.plist'
-alias sublime='"/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"'
-alias ls='ls -G'
 alias python='python3'
 
-alias mysql_start='brew services start mysql'
-alias mysql_stop='brew services stop mysql'
+###############################################################################
+# GO
+###############################################################################
+if [ $(which richgo) ]; then
+  alias gotest='mark && richgo test ./...'
+else
+  alias gotest='go test ./...'
+fi
 
 ###############################################################################
-# NEOVIM
+# DB
 ###############################################################################
-#alias vim='nvim'
+export PATH="/usr/local/opt/mongodb@3.6/bin:$PATH"
+alias mongod='mongod --dbpath /usr/local/var/mongodb/data/'
 
+export PATH="/usr/local/opt/mysql@5.7/bin:$PATH"
 
-test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+###############################################################################
+# KUBERNETES
+###############################################################################
+alias kube='kubectl'
 
-#export NVM_DIR="/Users/ryan/.nvm"
-#[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+###############################################################################
+# PYTHON
+###############################################################################
+# Activate current folder's pipenv virtualenv
+# or accept an explicit virtualenv name
+workon() {
+    if [ $# -eq 0 ]
+    then
+        source "$(pipenv --venv)/bin/activate"
+    else
+        source "~/.virtualenvs/$1/bin/activate"
+    fi
+}
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl/lib/
+# Making virtualenv alias
+mkvenv() {
+    cd ~/.virtualenvs
+    virtualenv "$@"
+    cd -
+    workon "$1"
+}
 
-export PATH="$PATH:/usr/local/opt/mysql@5.7/bin"
+# Automatic virtualenv sourcing
+function auto_pipenv_shell {
+    if [ ! -n "$VIRTUAL_ENV" ]; then
+        if [ -f "Pipfile" ] ; then
+            workon
+        fi
+    fi
+}
+function cd {
+    builtin cd "$@"
+    auto_pipenv_shell
+}
+auto_pipenv_shell
+
+###############################################################################
+# RUST
+###############################################################################
+export PATH="$HOME/.cargo/bin:$PATH"

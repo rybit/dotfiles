@@ -5,25 +5,46 @@ xcode-select --install
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # really want
-brew install dos2unix htop-osx iftop jq ngrep nmap openssl readline rlwrap tree watch wget
-brew install git bash-completion ansible bzr gpg ctags ag
-brew install figlet yamllint prettyping bat fzf diff-so-fancy fd
+brew install \
+	dos2unix \
+	htop-osx \
+	iftop \
+	jq \
+	ngrep \
+	nmap \
+	openssl \
+	readline \
+	rlwrap \
+	tree \
+	watch \
+	wget \
+	git  \
+	bash-completion  \
+	bzr  \
+	gpg  \
+	ctags  \
+	ag \
+	figlet \
+	yamllint \
+	prettyping \
+	bat \
+	fzf \
+	diff-so-fancy \
+	fd
 
 # dev languages
-brew install go node python python3
-brew install rbenv ruby-install
+brew install \
+	python \
+	python3 \
+	rbenv \
+	ruby-install
 
 # DB crap
-brew install sqlite mongodb postgres
-
-# docker crap
-brew cask install virtualbox
-brew install docker docker-machine
+brew install \
+	sqlite \
+	mongodb \
+	postgres
 
 # installing macvim
-brew reinstall macvim --HEAD --with-luajit --with-custom-icons --with-override-system-vim
-
-brew install neovim
-
-# netlify things
-brew install dns-masq elasticsearch kibana
+#brew reinstall macvim --HEAD --with-luajit --with-custom-icons --with-override-system-vim
+#brew install neovim
